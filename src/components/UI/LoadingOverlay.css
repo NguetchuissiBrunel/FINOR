@@ -1,0 +1,96 @@
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(10, 10, 10, 0.1);
+  backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.spinner-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  perspective: 1000px;
+}
+
+.loop {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px solid transparent;
+  border-top: 3px solid var(--color-gold);
+  border-radius: 50%;
+  box-shadow: 0 0 25px var(--color-gold-glow);
+}
+
+/* Outer Loop - Fast Z-axis */
+.loop-1 {
+  width: 120px;
+  height: 120px;
+  animation: spin-z 1.5s linear infinite;
+  opacity: 1;
+}
+
+/* Middle Loop - Slow Y-axis */
+.loop-2 {
+  width: 90px;
+  height: 90px;
+  border-top-color: var(--color-gold-hover);
+  animation: spin-y 2s linear infinite;
+  opacity: 0.8;
+}
+
+/* Inner Loop - Slow X-axis & Glow */
+.loop-3 {
+  width: 60px;
+  height: 60px;
+  border-top-color: var(--color-white);
+  animation: spin-x 2.5s linear infinite;
+  opacity: 0.9;
+  box-shadow: 0 0 40px var(--color-gold-glow);
+}
+
+.loading-text {
+  margin-top: 3rem;
+  font-family: var(--font-family);
+  color: var(--color-gold);
+  font-size: 1.1rem;
+  letter-spacing: 0.2em;
+  font-weight: 500;
+  text-transform: uppercase;
+  animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes spin-z {
+  from { transform: translate(-50%, -50%) rotateZ(0deg); }
+  to { transform: translate(-50%, -50%) rotateZ(360deg); }
+}
+
+@keyframes spin-y {
+  0% { transform: translate(-50%, -50%) rotateY(0deg) rotateX(15deg); }
+  100% { transform: translate(-50%, -50%) rotateY(360deg) rotateX(15deg); }
+}
+
+@keyframes spin-x {
+  0% { transform: translate(-50%, -50%) rotateX(0deg) rotateY(-15deg); }
+  100% { transform: translate(-50%, -50%) rotateX(360deg) rotateY(-15deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; transform: scale(0.95); text-shadow: 0 0 5px transparent; }
+  50% { opacity: 1; transform: scale(1.05); text-shadow: 0 0 15px var(--color-gold-glow); }
+}

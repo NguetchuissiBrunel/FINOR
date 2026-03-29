@@ -6,6 +6,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid 
 } from 'recharts';
 import { InvestorsService, RubricsService, type RubricBalance } from '../lib';
+import { LoadingOverlay } from '../components/UI/LoadingOverlay';
 
 interface FormattedInvestment {
   id: string;
@@ -39,15 +40,20 @@ export const InvestorDashboard = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        // Load Rubrics to resolve names
-        const rubricsRes = await RubricsService.listRubricsRubricsGet();
+        // 1. Parallel fetch of all independent resources
+        const [rubricsRes, historyRes, impactRes] = await Promise.all([
+          RubricsService.listRubricsRubricsGet(),
+          InvestorsService.getMyHistoryInvestorsMeHistoryGet(code),
+          InvestorsService.getMyImpactInvestorsMeImpactGet(code)
+        ]);
+        
         const rubricsList = rubricsRes.data || [];
         const rubricsMap = rubricsList.reduce((acc, r) => {
           acc[r.id] = r.name;
           return acc;
         }, {} as Record<string, string>);
 
-        // Global Balances
+        // 2. Fetch balances (depends on rubricsList)
         const balances = await Promise.all(
           rubricsList.map(async (r) => {
             const balRes = await RubricsService.getRubricBalanceRubricsRubricIdBalanceGet(r.id);
@@ -64,7 +70,6 @@ export const InvestorDashboard = () => {
         setGlobalRubricData(formattedTrends);
 
         // History
-        const historyRes = await InvestorsService.getMyHistoryInvestorsMeHistoryGet(code);
         const formattedHistory = (historyRes.data || []).map(inv => ({
           id: inv.id,
           date: new Date(inv.created_at).toLocaleDateString(),
@@ -76,7 +81,6 @@ export const InvestorDashboard = () => {
         setInvestments(formattedHistory);
 
         // Impact
-        const impactRes = await InvestorsService.getMyImpactInvestorsMeImpactGet(code);
         const formattedImpact = (impactRes.data || []).map(item => ({
           name: item.rubric_name,
           value: item.amount_invested
@@ -94,11 +98,7 @@ export const InvestorDashboard = () => {
   const COLORS = ['#D4AF37', '#2ECC71', '#3498DB', '#E67E22', '#9B59B6'];
 
   if (loading) {
-    return (
-      <div className="investor-dashboard pt-32 pb-12 text-center">
-        <p className="text-muted">Chargement de votre espace personnel...</p>
-      </div>
-    );
+    return <LoadingOverlay message="Synchronisation de votre espace" />;
   }
 
   const totalInvested = investments

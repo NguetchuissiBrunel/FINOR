@@ -18,6 +18,7 @@ import {
   InvestmentStatusEnum,
   type RubricBalance
 } from '../lib';
+import { LoadingOverlay } from '../components/UI/LoadingOverlay';
 
 export const TreasurerDashboard = () => {
   const { showNotification } = useNotification();
@@ -63,14 +64,31 @@ export const TreasurerDashboard = () => {
     try {
       setLoading(true);
 
+      // 1. Parallel fetch of all independent resources
+      const [
+        statsRes,
+        validDepRes,
+        invRes,
+        rRes,
+        pendingDepRes,
+        expRes,
+        tRes
+      ] = await Promise.all([
+        StatisticsService.getGlobalStatsStatsGlobalGet(),
+        InvestmentsService.listInvestmentsInvestmentsGet('VALIDATED' as InvestmentStatusEnum),
+        InvestorsService.listInvestorsInvestorsGet(),
+        RubricsService.listRubricsRubricsGet(),
+        InvestmentsService.listInvestmentsInvestmentsGet('PENDING' as InvestmentStatusEnum),
+        ExpensesService.listExpensesExpensesGet(),
+        TransfersService.listTransfersTransfersGet()
+      ]);
+
       // Global Stats
-      const statsRes = await StatisticsService.getGlobalStatsStatsGlobalGet();
       if (statsRes.data) {
         setGlobalStats(statsRes.data);
       }
 
       // Validated deposits to compute totals
-      const validDepRes = await InvestmentsService.listInvestmentsInvestmentsGet('VALIDATED' as InvestmentStatusEnum);
       const validDeposits = validDepRes.data || [];
       setValidatedDeposits(validDeposits);
       const investorTotals = validDeposits.reduce((acc, dep) => {
@@ -79,7 +97,6 @@ export const TreasurerDashboard = () => {
       }, {} as Record<string, number>);
 
       // Investors list
-      const invRes = await InvestorsService.listInvestorsInvestorsGet();
       const users = invRes.data || [];
       setInvestorsList(users.filter(u => u.role === 'INVESTOR').map(u => ({
         id: u.id,
@@ -89,17 +106,17 @@ export const TreasurerDashboard = () => {
       })));
 
       // Rubrics & Balances
-      const rRes = await RubricsService.listRubricsRubricsGet();
       const rList = rRes.data || [];
       setRubricsList(rList.map(r => ({ id: r.id, name: r.name })));
 
-      const balances = await Promise.all(
+      // 2. Secondary parallel fetch for balances dependent on Rubrics list
+      const balancesList = await Promise.all(
         rList.map(async r => {
           const bal = await RubricsService.getRubricBalanceRubricsRubricIdBalanceGet(r.id);
           return bal.data;
         })
       );
-      const validBalances = balances.filter((b): b is RubricBalance => b != null);
+      const validBalances = balancesList.filter((b): b is RubricBalance => b != null);
 
       setRubricData(validBalances.map(b => ({
         name: b.rubric_name,
@@ -115,8 +132,7 @@ export const TreasurerDashboard = () => {
       })));
 
       // Pending Deposits
-      const depRes = await InvestmentsService.listInvestmentsInvestmentsGet('PENDING' as InvestmentStatusEnum);
-      const pending = depRes.data || [];
+      const pending = pendingDepRes.data || [];
       // Map rubric IDs to names temporarily
       const rMap = rList.reduce((acc, r) => ({ ...acc, [r.id]: r.name }), {} as Record<string, string>);
 
@@ -130,12 +146,8 @@ export const TreasurerDashboard = () => {
         rubric_id: p.rubric_id
       })));
 
-      // Expenses
-      const expRes = await ExpensesService.listExpensesExpensesGet();
+      // Expenses & Transfers
       setExpenses(expRes.data || []);
-
-      // Transfers
-      const tRes = await TransfersService.listTransfersTransfersGet();
       setTransfers(tRes.data || []);
 
     } catch (e) {
@@ -228,13 +240,7 @@ export const TreasurerDashboard = () => {
   };
 
   if (loading) {
-    return (
-      <div className="treasurer-dashboard pt-32 pb-12 flex flex-col items-center justify-center min-h-[60vh] animation-fade-in">
-        <div className="w-16 h-16 border-4 border-gold-light border-t-gold rounded-full animate-spin mb-6"></div>
-        <h2 className="text-gold mb-2">Synchronisation des données</h2>
-        <p className="text-muted">Mise à jour de l'espace trésorier en cours...</p>
-      </div>
-    );
+    return <LoadingOverlay message="Synchronisation des données" />;
   }
 
   const getAllActivities = () => {

@@ -9,6 +9,7 @@ import {
   ApiError,
   type RubricRead,
 } from '../lib';
+import { LoadingOverlay } from '../components/UI/LoadingOverlay';
 
 export const Invest = () => {
   const [step, setStep] = useState(1);
@@ -19,6 +20,7 @@ export const Invest = () => {
     rubricId: '',
   });
   const [personalCode, setPersonalCode] = useState('');
+  const [isNewInvestor, setIsNewInvestor] = useState(false);
   const [rubrics, setRubrics] = useState<RubricRead[]>([]);
   const [loadingRubrics, setLoadingRubrics] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -62,6 +64,7 @@ export const Invest = () => {
       });
       const data = res.data;
       setPersonalCode(data?.access_code || '');
+      setIsNewInvestor(!!data?.is_new_investor);
       setStep(4);
       showNotification('Déclaration transmise avec succès !');
     } catch (err) {
@@ -81,6 +84,9 @@ export const Invest = () => {
 
   return (
     <div className="invest-page">
+      {(submitting || loadingRubrics) && (
+        <LoadingOverlay message={submitting ? "Transmission en cours" : "Synchronisation"} />
+      )}
       <div className="max-w-2xl mx-auto py-12">
         <h1 className="text-center mb-10">Déclarer un <span className="text-gold">Investissement</span></h1>
         
@@ -186,11 +192,13 @@ export const Invest = () => {
               <h3 className="text-gold mb-2">Déclaration Transmise !</h3>
               <p className="text-muted mb-8">
                 Votre investissement est en cours de validation. 
-                {personalCode && (
+                {isNewInvestor ? (
                   <>Voici votre <strong>Code Personnel</strong> secret pour consulter vos futurs relevés :</>
+                ) : (
+                  <>Bon retour ! Votre investissement a été associé à votre compte existant.</>
                 )}
               </p>
-              {personalCode && (
+              {isNewInvestor && personalCode && (
                 <>
                   <div className="bg-black p-4 rounded border border-dashed border-gold mb-8 text-2xl font-bold tracking-widest text-gold">
                     {personalCode}
