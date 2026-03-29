@@ -1,7 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card } from '../components/UI/Card';
 import { Button } from '../components/UI/Button';
 import { Input } from '../components/UI/Input';
+import { useNotification } from '../context/NotificationContext';
+import {
+  RubricsService,
+  InvestmentsService,
+  ApiError,
+  type RubricRead,
+} from '../lib';
 
 export const Invest = () => {
   const [step, setStep] = useState(1);
@@ -9,28 +16,68 @@ export const Invest = () => {
     name: '',
     amount: '',
     receiptCode: '',
-    rubric: '',
+    rubricId: '',
   });
   const [personalCode, setPersonalCode] = useState('');
+  const [rubrics, setRubrics] = useState<RubricRead[]>([]);
+  const [loadingRubrics, setLoadingRubrics] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const { showNotification } = useNotification();
+
+  // Load rubrics from backend
+  useEffect(() => {
+    const fetchRubrics = async () => {
+      try {
+        const res = await RubricsService.listRubricsRubricsGet();
+        setRubrics(res.data || []);
+      } catch {
+        showNotification('Impossible de charger les rubriques');
+      } finally {
+        setLoadingRubrics(false);
+      }
+    };
+    fetchRubrics();
+  }, []);
 
   const handleNext = () => setStep(step + 1);
   const handlePrev = () => setStep(step - 1);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate API call and personal code generation
-    const generatedCode = `INV-${Math.floor(1000 + Math.random() * 9000)}`;
-    setPersonalCode(generatedCode);
-    setStep(4); // Success step
+    setSubmitting(true);
+
+    // Normalize name to Title Case to prevent duplicates due to case sensitivity
+    const normalizedName = formData.name
+      .trim()
+      .split(/\s+/)
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
+
+    try {
+      const res = await InvestmentsService.declareInvestmentInvestmentsPost({
+        investor_name: normalizedName,
+        rubric_id: formData.rubricId,
+        amount: Number(formData.amount),
+        bank_receipt_code: formData.receiptCode,
+      });
+      const data = res.data;
+      setPersonalCode(data?.access_code || '');
+      setStep(4);
+      showNotification('Déclaration transmise avec succès !');
+    } catch (err) {
+      if (err instanceof ApiError) {
+        const body = err.body;
+        const msg = body?.detail || body?.message || 'Erreur lors de la soumission';
+        showNotification(typeof msg === 'string' ? msg : 'Erreur lors de la soumission');
+      } else {
+        showNotification('Erreur de connexion au serveur');
+      }
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  const rubrics = [
-    { id: 'route', name: 'Route' },
-    { id: 'eau', name: 'Eau' },
-    { id: 'elec', name: 'Électricité' },
-    { id: 'ecole', name: 'École' },
-    { id: 'dev', name: 'Développement' },
-  ];
+  const selectedRubricName = rubrics.find(r => r.id === formData.rubricId)?.name || '';
 
   return (
     <div className="invest-page">
@@ -71,20 +118,24 @@ export const Invest = () => {
               />
               <div className="form-group mb-6">
                 <label className="form-label">Rubrique de destination</label>
-                <select 
-                  className="form-input" 
-                  value={formData.rubric}
-                  onChange={(e) => setFormData({...formData, rubric: e.target.value})}
-                >
-                  <option value="">Sélectionnez une rubrique...</option>
-                  {rubrics.map(r => (
-                    <option key={r.id} value={r.id}>{r.name}</option>
-                  ))}
-                </select>
+                {loadingRubrics ? (
+                  <p className="text-muted text-sm">Chargement des rubriques...</p>
+                ) : (
+                  <select 
+                    className="form-input" 
+                    value={formData.rubricId}
+                    onChange={(e) => setFormData({...formData, rubricId: e.target.value})}
+                  >
+                    <option value="">Sélectionnez une rubrique...</option>
+                    {rubrics.map(r => (
+                      <option key={r.id} value={r.id}>{r.name}</option>
+                    ))}
+                  </select>
+                )}
               </div>
               <div className="mt-8 flex justify-between">
                 <Button variant="secondary" onClick={handlePrev}>Retour</Button>
-                <Button onClick={handleNext} disabled={!formData.amount || !formData.rubric}>Suivant</Button>
+                <Button onClick={handleNext} disabled={!formData.amount || !formData.rubricId}>Suivant</Button>
               </div>
             </div>
           )}
@@ -103,11 +154,11 @@ export const Invest = () => {
                 </div>
                 <div className="flex justify-between mb-2">
                   <span className="text-muted">Montant :</span>
-                  <span className="font-bold">{formData.amount} FCFA</span>
+                  <span className="font-bold">{Number(formData.amount).toLocaleString()} FCFA</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted">Rubrique :</span>
-                  <span>{rubrics.find(r => r.id === formData.rubric)?.name}</span>
+                  <span>{selectedRubricName}</span>
                 </div>
               </div>
               <p className="text-sm text-muted mb-8 italic">
@@ -116,7 +167,9 @@ export const Invest = () => {
               </p>
               <div className="mt-8 flex justify-between">
                 <Button type="button" variant="secondary" onClick={handlePrev}>Retour</Button>
-                <Button type="submit">Confirmer ma déclaration</Button>
+                <Button type="submit" disabled={submitting}>
+                  {submitting ? 'Envoi en cours...' : 'Confirmer ma déclaration'}
+                </Button>
               </div>
             </form>
           )}
@@ -133,14 +186,20 @@ export const Invest = () => {
               <h3 className="text-gold mb-2">Déclaration Transmise !</h3>
               <p className="text-muted mb-8">
                 Votre investissement est en cours de validation. 
-                Voici votre **Code Personnel** secret pour consulter vos futurs relevés :
+                {personalCode && (
+                  <>Voici votre <strong>Code Personnel</strong> secret pour consulter vos futurs relevés :</>
+                )}
               </p>
-              <div className="bg-black p-4 rounded border border-dashed border-gold mb-8 text-2xl font-bold tracking-widest text-gold">
-                {personalCode}
-              </div>
-              <p className="text-xs text-muted mb-10">
-                Notez précieusement ce code. Il ne vous sera communiqué qu'une seule fois.
-              </p>
+              {personalCode && (
+                <>
+                  <div className="bg-black p-4 rounded border border-dashed border-gold mb-8 text-2xl font-bold tracking-widest text-gold">
+                    {personalCode}
+                  </div>
+                  <p className="text-xs text-muted mb-10">
+                    Notez précieusement ce code. Il ne vous sera communiqué qu'une seule fois.
+                  </p>
+                </>
+              )}
               <Button onClick={() => window.location.href = '/investisseur/login'}>
                 Accéder à mon espace
               </Button>

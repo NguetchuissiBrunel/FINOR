@@ -2,18 +2,41 @@ import { useState } from 'react';
 import { Card } from '../components/UI/Card';
 import { Button } from '../components/UI/Button';
 import { Input } from '../components/UI/Input';
+import { useNotification } from '../context/NotificationContext';
+import { AuthenticationService, ApiError } from '../lib';
 
 export const InvestorLogin = () => {
   const [personalCode, setPersonalCode] = useState('');
+  const [loading, setLoading] = useState(false);
+  const { showNotification } = useNotification();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Verification logic: any code starting with INV- is accepted for the mock
-    if (personalCode.startsWith('INV-')) {
-      sessionStorage.setItem('investorCode', personalCode);
-      window.location.href = '/investisseur/dashboard';
-    } else {
-      alert('Veuillez saisir un code valide (Format INV-XXXX)');
+    setLoading(true);
+    try {
+      const res = await AuthenticationService.investorLoginAuthInvestorLoginPost({
+        access_code: personalCode,
+      });
+      const investor = res.data;
+      if (investor) {
+        sessionStorage.setItem('investorCode', investor.access_code);
+        sessionStorage.setItem('investorName', investor.name);
+        sessionStorage.setItem('investorId', investor.id);
+        showNotification(`Bienvenue, ${investor.name} !`);
+        window.location.href = '/investisseur/dashboard';
+      } else {
+        showNotification('Réponse inattendue du serveur');
+      }
+    } catch (err) {
+      if (err instanceof ApiError) {
+        const body = err.body;
+        const msg = body?.detail || body?.message || 'Code personnel invalide';
+        showNotification(typeof msg === 'string' ? msg : 'Code personnel invalide');
+      } else {
+        showNotification('Erreur de connexion au serveur');
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -37,7 +60,9 @@ export const InvestorLogin = () => {
             />
 
             <div className="mt-10">
-              <Button type="submit" fullWidth>Consulter mon Impact</Button>
+              <Button type="submit" fullWidth disabled={loading}>
+                {loading ? 'Vérification...' : 'Consulter mon Impact'}
+              </Button>
             </div>
 
             <p className="mt-8 text-center text-xs text-muted">

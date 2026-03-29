@@ -1,0 +1,2381 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "FINOR API",
+        "description": "Backend for FINOR - a village investment and project fund management platform. Two roles: Investor (personal code) and Treasurer (JWT).",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/auth/treasurer/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Treasurer Login",
+                "operationId": "treasurer_login_auth_treasurer_login_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TreasurerLoginRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GenericResponse_TokenResponse_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/investor/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Investor Login",
+                "operationId": "investor_login_auth_investor_login_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/InvestorLoginRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GenericResponse_InvestorLoginResponse_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/me": {
+            "patch": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Update My Profile",
+                "operationId": "update_my_profile_auth_me_patch",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserUpdate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GenericResponse_UserRead_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ]
+            }
+        },
+        "/rubrics/": {
+            "get": {
+                "tags": [
+                    "Rubrics"
+                ],
+                "summary": "List Rubrics",
+                "operationId": "list_rubrics_rubrics__get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GenericResponse_list_RubricRead__"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Rubrics"
+                ],
+                "summary": "Create Rubric",
+                "operationId": "create_rubric_rubrics__post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RubricCreate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GenericResponse_RubricRead_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ]
+            }
+        },
+        "/rubrics/{rubric_id}": {
+            "get": {
+                "tags": [
+                    "Rubrics"
+                ],
+                "summary": "Get Rubric",
+                "operationId": "get_rubric_rubrics__rubric_id__get",
+                "parameters": [
+                    {
+                        "name": "rubric_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Rubric Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GenericResponse_RubricRead_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Rubrics"
+                ],
+                "summary": "Update Rubric",
+                "operationId": "update_rubric_rubrics__rubric_id__patch",
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "rubric_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Rubric Id"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RubricUpdate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GenericResponse_RubricRead_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Rubrics"
+                ],
+                "summary": "Delete Rubric",
+                "operationId": "delete_rubric_rubrics__rubric_id__delete",
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "rubric_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Rubric Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GenericResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/rubrics/{rubric_id}/balance": {
+            "get": {
+                "tags": [
+                    "Rubrics"
+                ],
+                "summary": "Get Rubric Balance",
+                "operationId": "get_rubric_balance_rubrics__rubric_id__balance_get",
+                "parameters": [
+                    {
+                        "name": "rubric_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Rubric Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GenericResponse_RubricBalance_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/investments/": {
+            "post": {
+                "tags": [
+                    "Investments"
+                ],
+                "summary": "Declare Investment",
+                "operationId": "declare_investment_investments__post",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/InvestmentCreate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GenericResponse_InvestmentCreateResponse_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Investments"
+                ],
+                "summary": "List Investments",
+                "operationId": "list_investments_investments__get",
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "$ref": "#/components/schemas/InvestmentStatusEnum"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Status"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GenericResponse_list_InvestmentRead__"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/investments/{investment_id}": {
+            "get": {
+                "tags": [
+                    "Investments"
+                ],
+                "summary": "Get Investment",
+                "operationId": "get_investment_investments__investment_id__get",
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "investment_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Investment Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GenericResponse_InvestmentRead_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/investments/{investment_id}/validate": {
+            "patch": {
+                "tags": [
+                    "Investments"
+                ],
+                "summary": "Validate Investment",
+                "operationId": "validate_investment_investments__investment_id__validate_patch",
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "investment_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Investment Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GenericResponse_InvestmentRead_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/investments/{investment_id}/reject": {
+            "patch": {
+                "tags": [
+                    "Investments"
+                ],
+                "summary": "Reject Investment",
+                "operationId": "reject_investment_investments__investment_id__reject_patch",
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "investment_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Investment Id"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/InvestmentReject"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GenericResponse_InvestmentRead_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/expenses/": {
+            "post": {
+                "tags": [
+                    "Expenses"
+                ],
+                "summary": "Create Expense",
+                "operationId": "create_expense_expenses__post",
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ExpenseCreate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GenericResponse_ExpenseRead_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Expenses"
+                ],
+                "summary": "List Expenses",
+                "operationId": "list_expenses_expenses__get",
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "rubric_id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Rubric Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GenericResponse_list_ExpenseRead__"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/expenses/{expense_id}": {
+            "get": {
+                "tags": [
+                    "Expenses"
+                ],
+                "summary": "Get Expense",
+                "operationId": "get_expense_expenses__expense_id__get",
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "expense_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Expense Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GenericResponse_ExpenseRead_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/transfers/": {
+            "get": {
+                "tags": [
+                    "Transfers"
+                ],
+                "summary": "List Transfers",
+                "operationId": "list_transfers_transfers__get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GenericResponse_list_TransferRead__"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Transfers"
+                ],
+                "summary": "Create Transfer",
+                "operationId": "create_transfer_transfers__post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TransferCreate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GenericResponse_TransferRead_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ]
+            }
+        },
+        "/transfers/{transfer_id}": {
+            "get": {
+                "tags": [
+                    "Transfers"
+                ],
+                "summary": "Get Transfer",
+                "operationId": "get_transfer_transfers__transfer_id__get",
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "transfer_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Transfer Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GenericResponse_TransferRead_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/transfers/{transfer_id}/repaid": {
+            "patch": {
+                "tags": [
+                    "Transfers"
+                ],
+                "summary": "Mark Transfer Repaid",
+                "operationId": "mark_transfer_repaid_transfers__transfer_id__repaid_patch",
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "transfer_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Transfer Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GenericResponse_TransferRead_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/investors/": {
+            "get": {
+                "tags": [
+                    "Investors"
+                ],
+                "summary": "List Investors",
+                "description": "Allow treasurer to see all investors with their codes.",
+                "operationId": "list_investors_investors__get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GenericResponse_list_UserRead__"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ]
+            }
+        },
+        "/investors/me/history": {
+            "get": {
+                "tags": [
+                    "Investors"
+                ],
+                "summary": "Get My History",
+                "operationId": "get_my_history_investors_me_history_get",
+                "parameters": [
+                    {
+                        "name": "access_code",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Your personal INV-XXXX code",
+                            "title": "Access Code"
+                        },
+                        "description": "Your personal INV-XXXX code"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GenericResponse_list_InvestmentRead__"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/investors/me/impact": {
+            "get": {
+                "tags": [
+                    "Investors"
+                ],
+                "summary": "Get My Impact",
+                "operationId": "get_my_impact_investors_me_impact_get",
+                "parameters": [
+                    {
+                        "name": "access_code",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Your personal INV-XXXX code",
+                            "title": "Access Code"
+                        },
+                        "description": "Your personal INV-XXXX code"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GenericResponse_list_InvestorImpactItem__"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/investors/me": {
+            "patch": {
+                "tags": [
+                    "Investors"
+                ],
+                "summary": "Update My Profile",
+                "description": "Allow investor to update their personal info (except access_code).",
+                "operationId": "update_my_profile_investors_me_patch",
+                "parameters": [
+                    {
+                        "name": "access_code",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Your personal INV-XXXX code",
+                            "title": "Access Code"
+                        },
+                        "description": "Your personal INV-XXXX code"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserUpdate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GenericResponse_UserRead_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/stats/global": {
+            "get": {
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Get Global Stats",
+                "operationId": "get_global_stats_stats_global_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GenericResponse_GlobalStats_"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ExpenseCreate": {
+                "properties": {
+                    "rubric_id": {
+                        "type": "string",
+                        "title": "Rubric Id"
+                    },
+                    "description": {
+                        "type": "string",
+                        "title": "Description"
+                    },
+                    "amount": {
+                        "type": "number",
+                        "title": "Amount"
+                    },
+                    "receipt_number": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Receipt Number"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Date"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "rubric_id",
+                    "description",
+                    "amount",
+                    "date"
+                ],
+                "title": "ExpenseCreate"
+            },
+            "ExpenseRead": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "title": "Id"
+                    },
+                    "rubric_id": {
+                        "type": "string",
+                        "title": "Rubric Id"
+                    },
+                    "description": {
+                        "type": "string",
+                        "title": "Description"
+                    },
+                    "amount": {
+                        "type": "number",
+                        "title": "Amount"
+                    },
+                    "receipt_number": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Receipt Number"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Date"
+                    },
+                    "treasurer_id": {
+                        "type": "string",
+                        "title": "Treasurer Id"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "rubric_id",
+                    "description",
+                    "amount",
+                    "receipt_number",
+                    "date",
+                    "treasurer_id",
+                    "created_at"
+                ],
+                "title": "ExpenseRead"
+            },
+            "GenericResponse": {
+                "properties": {
+                    "code": {
+                        "type": "integer",
+                        "title": "Code",
+                        "default": 200
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message",
+                        "default": "Success"
+                    },
+                    "data": {
+                        "anyOf": [
+                            {},
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Data"
+                    }
+                },
+                "type": "object",
+                "title": "GenericResponse"
+            },
+            "GenericResponse_ExpenseRead_": {
+                "properties": {
+                    "code": {
+                        "type": "integer",
+                        "title": "Code",
+                        "default": 200
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message",
+                        "default": "Success"
+                    },
+                    "data": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/ExpenseRead"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    }
+                },
+                "type": "object",
+                "title": "GenericResponse[ExpenseRead]"
+            },
+            "GenericResponse_GlobalStats_": {
+                "properties": {
+                    "code": {
+                        "type": "integer",
+                        "title": "Code",
+                        "default": 200
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message",
+                        "default": "Success"
+                    },
+                    "data": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/GlobalStats"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    }
+                },
+                "type": "object",
+                "title": "GenericResponse[GlobalStats]"
+            },
+            "GenericResponse_InvestmentCreateResponse_": {
+                "properties": {
+                    "code": {
+                        "type": "integer",
+                        "title": "Code",
+                        "default": 200
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message",
+                        "default": "Success"
+                    },
+                    "data": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/InvestmentCreateResponse"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    }
+                },
+                "type": "object",
+                "title": "GenericResponse[InvestmentCreateResponse]"
+            },
+            "GenericResponse_InvestmentRead_": {
+                "properties": {
+                    "code": {
+                        "type": "integer",
+                        "title": "Code",
+                        "default": 200
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message",
+                        "default": "Success"
+                    },
+                    "data": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/InvestmentRead"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    }
+                },
+                "type": "object",
+                "title": "GenericResponse[InvestmentRead]"
+            },
+            "GenericResponse_InvestorLoginResponse_": {
+                "properties": {
+                    "code": {
+                        "type": "integer",
+                        "title": "Code",
+                        "default": 200
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message",
+                        "default": "Success"
+                    },
+                    "data": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/InvestorLoginResponse"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    }
+                },
+                "type": "object",
+                "title": "GenericResponse[InvestorLoginResponse]"
+            },
+            "GenericResponse_RubricBalance_": {
+                "properties": {
+                    "code": {
+                        "type": "integer",
+                        "title": "Code",
+                        "default": 200
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message",
+                        "default": "Success"
+                    },
+                    "data": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/RubricBalance"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    }
+                },
+                "type": "object",
+                "title": "GenericResponse[RubricBalance]"
+            },
+            "GenericResponse_RubricRead_": {
+                "properties": {
+                    "code": {
+                        "type": "integer",
+                        "title": "Code",
+                        "default": 200
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message",
+                        "default": "Success"
+                    },
+                    "data": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/RubricRead"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    }
+                },
+                "type": "object",
+                "title": "GenericResponse[RubricRead]"
+            },
+            "GenericResponse_TokenResponse_": {
+                "properties": {
+                    "code": {
+                        "type": "integer",
+                        "title": "Code",
+                        "default": 200
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message",
+                        "default": "Success"
+                    },
+                    "data": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/TokenResponse"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    }
+                },
+                "type": "object",
+                "title": "GenericResponse[TokenResponse]"
+            },
+            "GenericResponse_TransferRead_": {
+                "properties": {
+                    "code": {
+                        "type": "integer",
+                        "title": "Code",
+                        "default": 200
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message",
+                        "default": "Success"
+                    },
+                    "data": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/TransferRead"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    }
+                },
+                "type": "object",
+                "title": "GenericResponse[TransferRead]"
+            },
+            "GenericResponse_UserRead_": {
+                "properties": {
+                    "code": {
+                        "type": "integer",
+                        "title": "Code",
+                        "default": 200
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message",
+                        "default": "Success"
+                    },
+                    "data": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/UserRead"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    }
+                },
+                "type": "object",
+                "title": "GenericResponse[UserRead]"
+            },
+            "GenericResponse_list_ExpenseRead__": {
+                "properties": {
+                    "code": {
+                        "type": "integer",
+                        "title": "Code",
+                        "default": 200
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message",
+                        "default": "Success"
+                    },
+                    "data": {
+                        "anyOf": [
+                            {
+                                "items": {
+                                    "$ref": "#/components/schemas/ExpenseRead"
+                                },
+                                "type": "array"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Data"
+                    }
+                },
+                "type": "object",
+                "title": "GenericResponse[list[ExpenseRead]]"
+            },
+            "GenericResponse_list_InvestmentRead__": {
+                "properties": {
+                    "code": {
+                        "type": "integer",
+                        "title": "Code",
+                        "default": 200
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message",
+                        "default": "Success"
+                    },
+                    "data": {
+                        "anyOf": [
+                            {
+                                "items": {
+                                    "$ref": "#/components/schemas/InvestmentRead"
+                                },
+                                "type": "array"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Data"
+                    }
+                },
+                "type": "object",
+                "title": "GenericResponse[list[InvestmentRead]]"
+            },
+            "GenericResponse_list_InvestorImpactItem__": {
+                "properties": {
+                    "code": {
+                        "type": "integer",
+                        "title": "Code",
+                        "default": 200
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message",
+                        "default": "Success"
+                    },
+                    "data": {
+                        "anyOf": [
+                            {
+                                "items": {
+                                    "$ref": "#/components/schemas/InvestorImpactItem"
+                                },
+                                "type": "array"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Data"
+                    }
+                },
+                "type": "object",
+                "title": "GenericResponse[list[InvestorImpactItem]]"
+            },
+            "GenericResponse_list_RubricRead__": {
+                "properties": {
+                    "code": {
+                        "type": "integer",
+                        "title": "Code",
+                        "default": 200
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message",
+                        "default": "Success"
+                    },
+                    "data": {
+                        "anyOf": [
+                            {
+                                "items": {
+                                    "$ref": "#/components/schemas/RubricRead"
+                                },
+                                "type": "array"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Data"
+                    }
+                },
+                "type": "object",
+                "title": "GenericResponse[list[RubricRead]]"
+            },
+            "GenericResponse_list_TransferRead__": {
+                "properties": {
+                    "code": {
+                        "type": "integer",
+                        "title": "Code",
+                        "default": 200
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message",
+                        "default": "Success"
+                    },
+                    "data": {
+                        "anyOf": [
+                            {
+                                "items": {
+                                    "$ref": "#/components/schemas/TransferRead"
+                                },
+                                "type": "array"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Data"
+                    }
+                },
+                "type": "object",
+                "title": "GenericResponse[list[TransferRead]]"
+            },
+            "GenericResponse_list_UserRead__": {
+                "properties": {
+                    "code": {
+                        "type": "integer",
+                        "title": "Code",
+                        "default": 200
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message",
+                        "default": "Success"
+                    },
+                    "data": {
+                        "anyOf": [
+                            {
+                                "items": {
+                                    "$ref": "#/components/schemas/UserRead"
+                                },
+                                "type": "array"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Data"
+                    }
+                },
+                "type": "object",
+                "title": "GenericResponse[list[UserRead]]"
+            },
+            "GlobalStats": {
+                "properties": {
+                    "total_invested": {
+                        "type": "number",
+                        "title": "Total Invested"
+                    },
+                    "total_spent": {
+                        "type": "number",
+                        "title": "Total Spent"
+                    },
+                    "execution_rate": {
+                        "type": "number",
+                        "title": "Execution Rate"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "total_invested",
+                    "total_spent",
+                    "execution_rate"
+                ],
+                "title": "GlobalStats"
+            },
+            "HTTPValidationError": {
+                "properties": {
+                    "detail": {
+                        "items": {
+                            "$ref": "#/components/schemas/ValidationError"
+                        },
+                        "type": "array",
+                        "title": "Detail"
+                    }
+                },
+                "type": "object",
+                "title": "HTTPValidationError"
+            },
+            "InvestmentCreate": {
+                "properties": {
+                    "investor_name": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Investor Name"
+                    },
+                    "rubric_id": {
+                        "type": "string",
+                        "title": "Rubric Id"
+                    },
+                    "amount": {
+                        "type": "number",
+                        "title": "Amount"
+                    },
+                    "bank_receipt_code": {
+                        "type": "string",
+                        "title": "Bank Receipt Code"
+                    },
+                    "access_code": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Access Code"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "rubric_id",
+                    "amount",
+                    "bank_receipt_code"
+                ],
+                "title": "InvestmentCreate"
+            },
+            "InvestmentCreateResponse": {
+                "properties": {
+                    "investment": {
+                        "$ref": "#/components/schemas/InvestmentRead"
+                    },
+                    "access_code": {
+                        "type": "string",
+                        "title": "Access Code"
+                    },
+                    "is_new_investor": {
+                        "type": "boolean",
+                        "title": "Is New Investor"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "investment",
+                    "access_code",
+                    "is_new_investor"
+                ],
+                "title": "InvestmentCreateResponse"
+            },
+            "InvestmentRead": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "title": "Id"
+                    },
+                    "investor_id": {
+                        "type": "string",
+                        "title": "Investor Id"
+                    },
+                    "rubric_id": {
+                        "type": "string",
+                        "title": "Rubric Id"
+                    },
+                    "amount": {
+                        "type": "number",
+                        "title": "Amount"
+                    },
+                    "bank_receipt_code": {
+                        "type": "string",
+                        "title": "Bank Receipt Code"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/InvestmentStatusEnum"
+                    },
+                    "validation_date": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Validation Date"
+                    },
+                    "rejection_reason": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Rejection Reason"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "investor_id",
+                    "rubric_id",
+                    "amount",
+                    "bank_receipt_code",
+                    "status",
+                    "validation_date",
+                    "rejection_reason",
+                    "created_at"
+                ],
+                "title": "InvestmentRead"
+            },
+            "InvestmentReject": {
+                "properties": {
+                    "rejection_reason": {
+                        "type": "string",
+                        "title": "Rejection Reason"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "rejection_reason"
+                ],
+                "title": "InvestmentReject"
+            },
+            "InvestmentStatusEnum": {
+                "type": "string",
+                "enum": [
+                    "PENDING",
+                    "VALIDATED",
+                    "REJECTED"
+                ],
+                "title": "InvestmentStatusEnum"
+            },
+            "InvestorImpactItem": {
+                "properties": {
+                    "rubric_id": {
+                        "type": "string",
+                        "title": "Rubric Id"
+                    },
+                    "rubric_name": {
+                        "type": "string",
+                        "title": "Rubric Name"
+                    },
+                    "amount_invested": {
+                        "type": "number",
+                        "title": "Amount Invested"
+                    },
+                    "total_spent_in_rubric": {
+                        "type": "number",
+                        "title": "Total Spent In Rubric"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "rubric_id",
+                    "rubric_name",
+                    "amount_invested",
+                    "total_spent_in_rubric"
+                ],
+                "title": "InvestorImpactItem"
+            },
+            "InvestorLoginRequest": {
+                "properties": {
+                    "access_code": {
+                        "type": "string",
+                        "title": "Access Code"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "access_code"
+                ],
+                "title": "InvestorLoginRequest"
+            },
+            "InvestorLoginResponse": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "title": "Id"
+                    },
+                    "name": {
+                        "type": "string",
+                        "title": "Name"
+                    },
+                    "access_code": {
+                        "type": "string",
+                        "title": "Access Code"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "name",
+                    "access_code",
+                    "created_at"
+                ],
+                "title": "InvestorLoginResponse"
+            },
+            "RoleEnum": {
+                "type": "string",
+                "enum": [
+                    "INVESTOR",
+                    "TREASURER"
+                ],
+                "title": "RoleEnum"
+            },
+            "RubricBalance": {
+                "properties": {
+                    "rubric_id": {
+                        "type": "string",
+                        "title": "Rubric Id"
+                    },
+                    "rubric_name": {
+                        "type": "string",
+                        "title": "Rubric Name"
+                    },
+                    "initial_balance": {
+                        "type": "number",
+                        "title": "Initial Balance"
+                    },
+                    "total_invested": {
+                        "type": "number",
+                        "title": "Total Invested"
+                    },
+                    "total_expenses": {
+                        "type": "number",
+                        "title": "Total Expenses"
+                    },
+                    "total_transferred_out": {
+                        "type": "number",
+                        "title": "Total Transferred Out"
+                    },
+                    "total_transferred_in": {
+                        "type": "number",
+                        "title": "Total Transferred In"
+                    },
+                    "current_balance": {
+                        "type": "number",
+                        "title": "Current Balance"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "rubric_id",
+                    "rubric_name",
+                    "initial_balance",
+                    "total_invested",
+                    "total_expenses",
+                    "total_transferred_out",
+                    "total_transferred_in",
+                    "current_balance"
+                ],
+                "title": "RubricBalance"
+            },
+            "RubricCreate": {
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "title": "Name"
+                    },
+                    "description": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Description"
+                    },
+                    "initial_balance": {
+                        "type": "number",
+                        "title": "Initial Balance",
+                        "default": 0.0
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "name"
+                ],
+                "title": "RubricCreate"
+            },
+            "RubricRead": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "title": "Id"
+                    },
+                    "name": {
+                        "type": "string",
+                        "title": "Name"
+                    },
+                    "description": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Description"
+                    },
+                    "initial_balance": {
+                        "type": "number",
+                        "title": "Initial Balance"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "name",
+                    "description",
+                    "initial_balance",
+                    "created_at"
+                ],
+                "title": "RubricRead"
+            },
+            "RubricUpdate": {
+                "properties": {
+                    "name": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Name"
+                    },
+                    "description": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Description"
+                    }
+                },
+                "type": "object",
+                "title": "RubricUpdate"
+            },
+            "TokenResponse": {
+                "properties": {
+                    "access_token": {
+                        "type": "string",
+                        "title": "Access Token"
+                    },
+                    "token_type": {
+                        "type": "string",
+                        "title": "Token Type",
+                        "default": "bearer"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "access_token"
+                ],
+                "title": "TokenResponse"
+            },
+            "TransferCreate": {
+                "properties": {
+                    "source_rubric_id": {
+                        "type": "string",
+                        "title": "Source Rubric Id"
+                    },
+                    "destination_rubric_id": {
+                        "type": "string",
+                        "title": "Destination Rubric Id"
+                    },
+                    "amount": {
+                        "type": "number",
+                        "title": "Amount"
+                    },
+                    "reason": {
+                        "type": "string",
+                        "title": "Reason"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Date"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "source_rubric_id",
+                    "destination_rubric_id",
+                    "amount",
+                    "reason",
+                    "date"
+                ],
+                "title": "TransferCreate"
+            },
+            "TransferRead": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "title": "Id"
+                    },
+                    "source_rubric_id": {
+                        "type": "string",
+                        "title": "Source Rubric Id"
+                    },
+                    "destination_rubric_id": {
+                        "type": "string",
+                        "title": "Destination Rubric Id"
+                    },
+                    "amount": {
+                        "type": "number",
+                        "title": "Amount"
+                    },
+                    "reason": {
+                        "type": "string",
+                        "title": "Reason"
+                    },
+                    "is_repaid": {
+                        "type": "boolean",
+                        "title": "Is Repaid"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Date"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "source_rubric_id",
+                    "destination_rubric_id",
+                    "amount",
+                    "reason",
+                    "is_repaid",
+                    "date",
+                    "created_at"
+                ],
+                "title": "TransferRead"
+            },
+            "TreasurerLoginRequest": {
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "title": "Email"
+                    },
+                    "password": {
+                        "type": "string",
+                        "title": "Password"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "title": "TreasurerLoginRequest"
+            },
+            "UserRead": {
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "title": "Id"
+                    },
+                    "name": {
+                        "type": "string",
+                        "title": "Name"
+                    },
+                    "phone": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Phone"
+                    },
+                    "role": {
+                        "$ref": "#/components/schemas/RoleEnum"
+                    },
+                    "access_code": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Access Code"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "name",
+                    "role",
+                    "access_code",
+                    "created_at"
+                ],
+                "title": "UserRead"
+            },
+            "UserUpdate": {
+                "properties": {
+                    "name": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Name"
+                    },
+                    "email": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Email"
+                    },
+                    "password": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Password"
+                    },
+                    "phone": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Phone"
+                    }
+                },
+                "type": "object",
+                "title": "UserUpdate"
+            },
+            "ValidationError": {
+                "properties": {
+                    "loc": {
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Location"
+                    },
+                    "msg": {
+                        "type": "string",
+                        "title": "Message"
+                    },
+                    "type": {
+                        "type": "string",
+                        "title": "Error Type"
+                    },
+                    "input": {
+                        "title": "Input"
+                    },
+                    "ctx": {
+                        "type": "object",
+                        "title": "Context"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "loc",
+                    "msg",
+                    "type"
+                ],
+                "title": "ValidationError"
+            }
+        },
+        "securitySchemes": {
+            "HTTPBearer": {
+                "type": "http",
+                "scheme": "bearer"
+            }
+        }
+    }
+}

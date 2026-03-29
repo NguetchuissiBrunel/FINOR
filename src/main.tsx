@@ -3,6 +3,13 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import './utilities.css'
 import App from './App.tsx'
+import { OpenAPI } from './lib'
+
+// Configure the generated API client
+OpenAPI.BASE = '/api'
+OpenAPI.TOKEN = async () => {
+  return sessionStorage.getItem('treasurerToken') || ''
+}
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
