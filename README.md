@@ -1,73 +1,86 @@
-# React + TypeScript + Vite
+# ⚜️ FINOR - Finance Orchestrated
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> **A Premium Finance PWA with a "Noir & Or" (Black & Gold) Aesthetic.**
 
-Currently, two official plugins are available:
+FINOR is a sophisticated wealth management and investment tracking progressive web application. Designed for both individual investors and organization treasurers, it provides a seamless, secure, and visually stunning experience for managing financial assets.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## ✨ Key Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+-   🗂 **Dual-Dashboard Architecture**: Separated workflows for **Investors** and **Treasurers**.
+-   🌑 **Premium Design**: A high-end "Noir & Or" interface focused on readability and elegance.
+-   📱 **Full PWA Support**: Reliable, fast, and installable on any mobile device.
+-   📊 **Advanced Analytics**: Real-time charts and visual data representation using Recharts.
+-   🔒 **Secure Authentication**: Multi-layered security protocols including personal code-based access for administrative tasks.
+-   💹 **Investment Tracking**: Detailed monitoring of portfolios and financial growth.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🏗 Built With
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+FINOR is powered by a modern, high-performance tech stack:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+-   **Frontend**: [React 19](https://reactjs.org/)
+-   **Build Tool**: [Vite 6](https://vitejs.dev/)
+-   **Language**: [TypeScript](https://www.typescriptlang.org/)
+-   **Styles**: Vanilla CSS with custom design tokens
+-   **Routing**: [React Router 7](https://reactrouter.com/)
+-   **Data Viz**: [Recharts](https://recharts.org/)
+-   **PWA**: [Vite Plugin PWA](https://vite-pwa-org.netlify.app/)
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+-   **Node.js** (LTS version recommended)
+-   **npm** or **yarn**
+
+### Installation
+
+1. Clone the repository:
+    ```bash
+    git clone https://github.com/your-username/finor.git
+    cd finor
+    ```
+
+2. Install dependencies:
+    ```bash
+    npm install
+    ```
+
+3. Launch the development server:
+    ```bash
+    npm run dev
+    ```
+
+### Production Build
+
+To create a production-ready bundle:
+```bash
+npm run build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 📖 System Overview
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### 💎 Investor Dashboard
+Providing investors with a clear view of their portfolio, current investments, and growth projections within a premium interface.
+
+### 🏛 Treasurer Dashboard
+A powerful administrative area for managing collective assets, overseeing investor activities, and performing secure financial operations authenticated via personal access codes.
+
+---
+
+## ⚖️ License
+
+Distributed under the **MIT License**. See `LICENSE` for more information.
+
+---
+
+<p align="center">
+  <i>Finor — Sophistication in Finance.</i>
+</p>
