@@ -35,6 +35,29 @@
   --transition-normal: 0.25s ease-in-out;
 }
 
+/* Fluid Desktop Scaling for Laptops/Low-res Screens */
+@media screen and (max-width: 1440px) {
+  :root {
+    --spacing-xl: 1.5rem;
+    --spacing-xxl: 2rem;
+  }
+  
+  html {
+    font-size: 15px; /* Slightly scale down everything proportionally */
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  :root {
+    --spacing-xl: 1.25rem;
+    --spacing-xxl: 1.75rem;
+  }
+  
+  html {
+    font-size: 14.5px;
+  }
+}
+
 * {
   box-sizing: border-box;
   margin: 0;

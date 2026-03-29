@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { usePWA } from '../../hooks/usePWA';
+import { useDraggable } from '../../hooks/useDraggable';
 import './PWAInstallModal.css';
 
 export const PWAInstallModal = () => {
   const { installPrompt, isInstalled, handleInstall } = usePWA();
   const [isVisible, setIsVisible] = useState(false);
+  const { style, handleMouseDown, isDragging } = useDraggable();
 
   useEffect(() => {
     // Show modal if installable and not dismissed this session
@@ -29,10 +31,15 @@ export const PWAInstallModal = () => {
 
   return (
     <div className="pwa-modal-overlay">
-      <div className="pwa-modal-card animation-slide-up">
+      <div 
+        className={`pwa-modal-card animation-slide-up ${isDragging ? 'dragging' : ''}`}
+        style={style}
+        onMouseDown={handleMouseDown}
+        onTouchStart={handleMouseDown}
+      >
         <button className="close-btn" onClick={handleDismiss}>&times;</button>
         
-        <div className="pwa-modal-header">
+        <div className="pwa-modal-header drp-handle">
           <div className="pwa-modal-logo">
             <img src="/logo.png" alt="FINOR" />
           </div>

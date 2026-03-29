@@ -146,27 +146,65 @@
 /* PWA Hint Modal (Styled Popup) */
 .pwa-hint-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.8);
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.85);
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   z-index: 10000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-md);
+  display: block;
+  overflow: hidden;
 }
 
 .pwa-hint-card {
+  position: absolute;
+  top: 48%; /* Slightly higher for better visual balance */
+  left: 50%;
   background-color: var(--color-surface);
   border: 1px solid var(--color-gold-glow);
   border-radius: var(--radius-lg);
   padding: var(--spacing-xl);
   max-width: 450px;
-  width: 100%;
+  max-height: 85vh; /* Prevent overflow on small screens */
+  overflow-y: auto; /* Enable internal scroll if needed */
+  width: calc(100% - 40px);
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.9);
+  user-select: none;
+  touch-action: none;
+  z-index: 10001;
+}
+
+.pwa-hint-card.dragging {
+  cursor: grabbing;
+  box-shadow: 0 35px 70px rgba(0, 0, 0, 0.95);
+  transition: none;
+}
+
+@media (max-width: 480px) {
+  .pwa-hint-overlay {
+    background-color: rgba(0, 0, 0, 0.9);
+    display: block;
+  }
+
+  .pwa-hint-card {
+    top: 35%; /* Lift higher on phones */
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: var(--spacing-lg);
+    width: calc(100% - 2 * var(--spacing-md));
+  }
+  
+  .pwa-hint-header h3 {
+    font-size: 1.25rem;
+  }
+}
+
+/* Extra Lift for short screens (e.g., iPhone SE 375x667) */
+@media (max-height: 700px) {
+  .pwa-hint-card {
+    top: 28%; /* Lift significantly higher for very short viewports */
+  }
 }
 
 .pwa-hint-header {
@@ -176,6 +214,7 @@
   margin-bottom: var(--spacing-lg);
   border-bottom: 1px solid rgba(255,255,255,0.05);
   padding-bottom: var(--spacing-md);
+  cursor: grab;
 }
 
 .hint-icon {

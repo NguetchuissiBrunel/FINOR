@@ -579,7 +579,9 @@ export const TreasurerDashboard = () => {
               {getAllActivities().length === 0 && (
                 <div className="text-center py-10">
                   <div className="w-12 h-12 rounded-full bg-white/5 mx-auto mb-3 flex items-center justify-center text-white/20">
-                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
                   </div>
                   <p className="text-muted text-sm">Aucune activité récente recensée.</p>
                 </div>
@@ -597,10 +599,10 @@ export const TreasurerDashboard = () => {
           <Card className="p-0 overflow-hidden">
             {pendingDeposits.length === 0 ? (
               <div className="py-16 text-center border-t border-white/5">
-                <div className="w-16 h-16 rounded-full bg-black/40 border border-[#D4AF37]/30 flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 rounded-full bg-black/40 border border-gold-light flex items-center justify-center mx-auto mb-4">
                   <span className="text-2xl text-gold">✓</span>
                 </div>
-                <p className="text-[#D4AF37] text-lg mb-2">Aucun dépôt en attente</p>
+                <p className="text-gold text-lg mb-2">Aucun dépôt en attente</p>
                 <p className="text-muted text-sm">Toutes les soumissions de vos investisseurs ont été traitées.</p>
               </div>
             ) : (
@@ -669,10 +671,10 @@ export const TreasurerDashboard = () => {
             <Card className="p-0 overflow-hidden">
               {expenses.length === 0 ? (
                 <div className="py-16 text-center border-t border-white/5">
-                  <div className="w-16 h-16 rounded-full bg-black/40 border border-[#D4AF37]/30 flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 rounded-full bg-black/40 border border-gold-light flex items-center justify-center mx-auto mb-4">
                     <span className="text-2xl text-gold">💰</span>
                   </div>
-                  <p className="text-[#D4AF37] text-lg mb-2">Aucune dépense enregistrée</p>
+                  <p className="text-gold text-lg mb-2">Aucune dépense enregistrée</p>
                   <p className="text-muted text-sm">Vous n'avez effectué aucune sortie de caisse pour le moment.</p>
                 </div>
               ) : (

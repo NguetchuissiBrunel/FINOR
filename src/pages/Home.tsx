@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { usePWA } from '../hooks/usePWA';
+import { useDraggable } from '../hooks/useDraggable';
 import './Home.css';
 
 export const Home = () => {
   const { installPrompt, isInstalled, handleInstall } = usePWA();
   const [showHint, setShowHint] = useState(false);
+  const { style, handleMouseDown, isDragging } = useDraggable();
   
   // Detect if on iOS
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
@@ -86,8 +88,14 @@ export const Home = () => {
       {/* Styled Popup (Hint Modal) */}
       {showHint && (
         <div className="pwa-hint-overlay" onClick={() => setShowHint(false)}>
-          <div className="pwa-hint-card animation-slide-up" onClick={e => e.stopPropagation()}>
-            <div className="pwa-hint-header">
+          <div 
+            className={`pwa-hint-card animation-slide-up ${isDragging ? 'dragging' : ''}`}
+            style={style}
+            onClick={e => e.stopPropagation()}
+            onMouseDown={handleMouseDown}
+            onTouchStart={handleMouseDown}
+          >
+            <div className="pwa-hint-header drp-handle">
               <div className="hint-icon">💡</div>
               <h3>Installation Manuelle</h3>
             </div>
