@@ -1,0 +1,221 @@
+.home-page {
+  animation: fadeIn 0.8s ease-out;
+  overflow: hidden;
+  position: relative;
+}
+
+.hero-section {
+  padding: 6rem 0 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  position: relative;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(212,175,55,0.08) 0%, rgba(10,10,10,0) 70%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.hero-title {
+  font-size: 4rem;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: var(--spacing-lg);
+  max-width: 800px;
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  color: var(--color-text-muted);
+  max-width: 600px;
+  margin-bottom: var(--spacing-xxl);
+}
+
+.hero-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: center;
+}
+
+.features-section {
+  padding: 4rem 0;
+}
+
+.features-section h2 {
+  margin-bottom: var(--spacing-xxl);
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: var(--spacing-xl);
+}
+
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .hero-actions {
+    flex-direction: column;
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .hero-actions .btn {
+    width: 100%;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Install Section */
+.install-section {
+  padding: 4rem 0 6rem;
+}
+
+.install-card {
+  background: linear-gradient(135deg, var(--color-surface) 0%, rgba(20, 20, 20, 0.8) 100%);
+  border-left: 4px solid var(--color-gold);
+  padding: var(--spacing-xxl);
+}
+
+.install-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-xl);
+}
+
+.install-text h3 {
+  font-size: 1.75rem;
+  margin-bottom: var(--spacing-xs);
+}
+
+.installed-badge {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--color-gold-glow);
+  background-color: var(--color-gold-light);
+  border-radius: var(--radius-round);
+  font-weight: 600;
+}
+
+.ios-guide {
+  background-color: var(--color-surface-hover);
+  padding: 1rem 1.5rem;
+  border-radius: var(--radius-lg);
+  border: 1px dashed var(--color-gold-glow);
+  max-width: 300px;
+}
+
+@media (max-width: 768px) {
+  .install-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .install-actions {
+    width: 100%;
+  }
+  
+  .install-actions .btn {
+    width: 100%;
+  }
+}
+
+/* PWA Hint Modal (Styled Popup) */
+.pwa-hint-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-md);
+}
+
+.pwa-hint-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-gold-glow);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  max-width: 450px;
+  width: 100%;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.9);
+}
+
+.pwa-hint-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  padding-bottom: var(--spacing-md);
+}
+
+.hint-icon {
+  font-size: 2rem;
+}
+
+.hint-steps {
+  margin: var(--spacing-lg) 0;
+}
+
+.hint-step {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  align-items: flex-start;
+}
+
+.step-num {
+  background-color: var(--color-gold);
+  color: var(--color-black);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.retry-msg {
+  margin-top: var(--spacing-xl);
+  margin-bottom: var(--spacing-md);
+  text-align: center;
+}
+
+.btn-pwa-main {
+  min-width: 180px;
+  font-weight: 600;
+  padding: 0.85rem 2rem !important;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
