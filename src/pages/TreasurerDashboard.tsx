@@ -15,6 +15,8 @@ import {
   ExpensesService,
   InvestorsService,
   TransfersService,
+  AuthenticationService,
+  ApiError,
   InvestmentStatusEnum,
   type RubricBalance
 } from '../lib';
@@ -42,7 +44,7 @@ export const TreasurerDashboard = () => {
     }
   }, []);
 
-  const [activeTab, setActiveTab] = useState<'overview' | 'deposits' | 'expenses' | 'transfers' | 'rubrics' | 'investors'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'deposits' | 'expenses' | 'transfers' | 'rubrics' | 'investors' | 'profile'>('overview');
   const [showNewRubricForm, setShowNewRubricForm] = useState(false);
   const [showNewExpenseForm, setShowNewExpenseForm] = useState(false);
   const [showNewTransferForm, setShowNewTransferForm] = useState(false);
@@ -68,6 +70,12 @@ export const TreasurerDashboard = () => {
   const [newRubricName, setNewRubricName] = useState('');
   const [newExpense, setNewExpense] = useState({ description: '', amount: '', rubric_id: '', receipt_number: '' });
   const [newTransfer, setNewTransfer] = useState({ source_rubric_id: '', destination_rubric_id: '', amount: '', reason: '' });
+
+  // Password Update States
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordLoading, setPasswordLoading] = useState(false);
 
   // Fetch Data
   const fetchData = useCallback(async () => {
@@ -266,6 +274,46 @@ export const TreasurerDashboard = () => {
       await fetchData();
     } catch (e) {
       showNotification('Erreur enregistrement transfert');
+    }
+  };
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newPassword !== confirmPassword) {
+      return showNotification('Les nouveaux mots de passe ne correspondent pas');
+    }
+    
+    const email = sessionStorage.getItem('treasurerEmail');
+    if (!email) {
+      return showNotification('Session expirée. Veuillez vous reconnecter.');
+    }
+
+    try {
+      setPasswordLoading(true);
+      // 1. Verify old password by attempting a login
+      await AuthenticationService.treasurerLoginAuthTreasurerLoginPost({
+        email,
+        password: oldPassword
+      });
+
+      // 2. If login succeeds, the old password is correct. Now patch the new one.
+      await AuthenticationService.updateMyProfileAuthMePatch({
+        password: newPassword
+      });
+
+      showNotification('Mot de passe mis à jour avec succès !');
+      setOldPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+      
+    } catch (err) {
+      if (err instanceof ApiError) {
+        showNotification('L\'ancien mot de passe est incorrect ou invalide.');
+      } else {
+        showNotification('Une erreur est survenue lors de la mise à jour.');
+      }
+    } finally {
+      setPasswordLoading(false);
     }
   };
 
@@ -483,6 +531,12 @@ export const TreasurerDashboard = () => {
         onClick={() => setActiveTab('rubrics')}
       >
         Gestion Rubriques
+      </button>
+      <button
+        className={`tab-pill bg-transparent border-none cursor-pointer ${activeTab === 'profile' ? 'active' : ''}`}
+        onClick={() => setActiveTab('profile')}
+      >
+        Mon Profil
       </button>
     </div>
   );
@@ -1227,6 +1281,48 @@ export const TreasurerDashboard = () => {
               )}
             </>
           )}
+        </div>
+      )}
+
+      {activeTab === 'profile' && (
+        <div className="animation-fade-in">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="m-0">Paramètres de sécurité</h2>
+          </div>
+          <Card className="max-w-md border-gold">
+            <p className="text-muted text-sm mb-6">Mettez à jour le mot de passe du compte trésorier. L'ancien mot de passe est requis pour des raisons de sécurité.</p>
+            <form onSubmit={handleChangePassword} className="space-y-4">
+              <Input
+                label="Ancien mot de passe"
+                type="password"
+                placeholder="••••••••••••"
+                required
+                value={oldPassword}
+                onChange={(e) => setOldPassword(e.target.value)}
+              />
+              <Input
+                label="Nouveau mot de passe"
+                type="password"
+                placeholder="••••••••••••"
+                required
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+              />
+              <Input
+                label="Confirmer le nouveau mot de passe"
+                type="password"
+                placeholder="••••••••••••"
+                required
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
+              <div className="pt-4">
+                <Button type="submit" fullWidth disabled={passwordLoading}>
+                  {passwordLoading ? 'Vérification...' : 'Enregistrer le nouveau mot de passe'}
+                </Button>
+              </div>
+            </form>
+          </Card>
         </div>
       )}
     </div>

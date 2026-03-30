@@ -22,6 +22,7 @@ export const TreasurerLogin = () => {
       const token = res.data?.access_token;
       if (token) {
         sessionStorage.setItem('treasurerToken', token);
+        sessionStorage.setItem('treasurerEmail', email);
         sessionStorage.setItem('isTreasurerAuthenticated', 'true');
         showNotification('Accès Trésorier Validé ✓');
         window.location.href = '/tresorier';
