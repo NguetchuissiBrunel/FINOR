@@ -85,26 +85,26 @@ export const Invest = () => {
   return (
     <div className="invest-page">
       {(submitting || loadingRubrics) && (
-        <LoadingOverlay message={submitting ? "Transmission en cours" : "Synchronisation"} />
+        <LoadingOverlay message={"Synchronisation"} />
       )}
       <div className="max-w-2xl mx-auto py-12">
         <h1 className="text-center mb-10">Déclarer un <span className="text-gold">Investissement</span></h1>
-        
+
         <Card>
           {step === 1 && (
             <div className="step-content animation-fade-in">
               <h3 className="mb-6">Étape 1 : Informations de base</h3>
-              <Input 
-                label="Votre Nom complet" 
+              <Input
+                label="Votre Nom complet"
                 placeholder="Ex: Jean Kamga"
                 value={formData.name}
-                onChange={(e) => setFormData({...formData, name: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               />
-              <Input 
-                label="Code du reçu bancaire" 
+              <Input
+                label="Code du reçu bancaire"
                 placeholder="Ex: REC-987654"
                 value={formData.receiptCode}
-                onChange={(e) => setFormData({...formData, receiptCode: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, receiptCode: e.target.value })}
               />
               <div className="mt-8 flex justify-end">
                 <Button onClick={handleNext} disabled={!formData.name || !formData.receiptCode}>Suivant</Button>
@@ -115,22 +115,22 @@ export const Invest = () => {
           {step === 2 && (
             <div className="step-content animation-fade-in">
               <h3 className="mb-6">Étape 2 : Montant et Rubrique</h3>
-              <Input 
-                label="Montant du dépôt (FCFA)" 
-                type="number" 
+              <Input
+                label="Montant du dépôt (FCFA)"
+                type="number"
                 placeholder="Ex: 100000"
                 value={formData.amount}
-                onChange={(e) => setFormData({...formData, amount: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
               />
               <div className="form-group mb-6">
                 <label className="form-label">Rubrique de destination</label>
                 {loadingRubrics ? (
                   <p className="text-muted text-sm">Chargement des rubriques...</p>
                 ) : (
-                  <select 
-                    className="form-input" 
+                  <select
+                    className="form-input"
                     value={formData.rubricId}
-                    onChange={(e) => setFormData({...formData, rubricId: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, rubricId: e.target.value })}
                   >
                     <option value="">Sélectionnez une rubrique...</option>
                     {rubrics.map(r => (
@@ -168,7 +168,7 @@ export const Invest = () => {
                 </div>
               </div>
               <p className="text-sm text-muted mb-8 italic">
-                En cliquant sur confirmer, vous déclarez avoir effectué ce dépôt à la banque. 
+                En cliquant sur confirmer, vous déclarez avoir effectué ce dépôt à la banque.
                 Le trésorier validera l'opération après vérification.
               </p>
               <div className="mt-8 flex justify-between">
@@ -191,7 +191,7 @@ export const Invest = () => {
               </div>
               <h3 className="text-gold mb-2">Déclaration Transmise !</h3>
               <p className="text-muted mb-8">
-                Votre investissement est en cours de validation. 
+                Votre investissement est en cours de validation.
                 {isNewInvestor ? (
                   <>Voici votre <strong>Code Personnel</strong> secret pour consulter vos futurs relevés :</>
                 ) : (

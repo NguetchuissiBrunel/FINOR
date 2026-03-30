@@ -282,7 +282,7 @@ export const TreasurerDashboard = () => {
     if (newPassword !== confirmPassword) {
       return showNotification('Les nouveaux mots de passe ne correspondent pas');
     }
-    
+
     const email = sessionStorage.getItem('treasurerEmail');
     if (!email) {
       return showNotification('Session expirée. Veuillez vous reconnecter.');
@@ -305,7 +305,7 @@ export const TreasurerDashboard = () => {
       setOldPassword('');
       setNewPassword('');
       setConfirmPassword('');
-      
+
     } catch (err) {
       if (err instanceof ApiError) {
         showNotification('L\'ancien mot de passe est incorrect ou invalide.');
@@ -318,7 +318,7 @@ export const TreasurerDashboard = () => {
   };
 
   if (loading) {
-    return <LoadingOverlay message="Synchronisation des données" />;
+    return <LoadingOverlay message="Synchronisation" />;
   }
 
   const getAllActivities = () => {

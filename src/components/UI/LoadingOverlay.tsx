@@ -5,7 +5,7 @@ interface LoadingOverlayProps {
   message?: string;
 }
 
-export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({ message = 'Synchronisation' }) => {
+export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({ message = '' }) => {
   return (
     <div className="loading-overlay">
       <div className="spinner-container">

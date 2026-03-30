@@ -100,7 +100,7 @@ export const InvestorDashboard = () => {
   const COLORS = ['#D4AF37', '#2ECC71', '#3498DB', '#E67E22', '#9B59B6'];
 
   if (loading) {
-    return <LoadingOverlay message="Synchronisation de votre espace" />;
+    return <LoadingOverlay message="Synchronisation" />;
   }
 
   const totalInvested = investments
