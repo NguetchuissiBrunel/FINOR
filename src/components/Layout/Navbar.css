@@ -237,3 +237,31 @@
   background-color: rgba(212, 175, 55, 0.1);
   border-color: rgba(212, 175, 55, 0.3);
 }
+
+.tab-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tab-badge {
+  background-color: #e74c3c;
+  color: white !important;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  min-width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+  animation: pulse-badge 2s infinite;
+}
+
+@keyframes pulse-badge {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}

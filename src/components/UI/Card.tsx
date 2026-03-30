@@ -3,13 +3,13 @@ import React from 'react';
 interface CardProps {
   children: React.ReactNode;
   className?: string;
-  title?: string;
+  title?: React.ReactNode;
 }
 
 export const Card: React.FC<CardProps> = ({ children, className = '', title }) => {
   return (
     <div className={`card ${className}`}>
-      {title && <h3 className="card-title text-gold mb-4">{title}</h3>}
+      {title && <div className="card-title-container mb-4">{title}</div>}
       <div className="card-content">
         {children}
       </div>

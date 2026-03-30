@@ -40,11 +40,13 @@ export const TreasurerDashboard = () => {
   const [showNewTransferForm, setShowNewTransferForm] = useState(false);
   const [selectedRubricForHistory, setSelectedRubricForHistory] = useState<string | null>(null);
   const [visibleCodeId, setVisibleCodeId] = useState<string | null>(null);
+  const [editingRubricId, setEditingRubricId] = useState<string | null>(null);
+  const [editRubricName, setEditRubricName] = useState('');
 
   // Data States
   const [globalStats, setGlobalStats] = useState({ total_invested: 0, total_spent: 0, execution_rate: 0 });
   const [rubricsList, setRubricsList] = useState<{ id: string, name: string }[]>([]);
-  const [rubricData, setRubricData] = useState<{ name: string, value: number, invested: number, spent: number }[]>([]);
+  const [rubricData, setRubricData] = useState<{ id: string, name: string, value: number, invested: number, spent: number }[]>([]);
   const [investorsList, setInvestorsList] = useState<{ id: string, name: string, total: number, code: string }[]>([]);
   const [loanExposureData, setLoanExposureData] = useState<{ name: string, lent: number, self: number }[]>([]);
   const [pendingDeposits, setPendingDeposits] = useState<{ id: string, user: string, amount: number, project: string, code: string, date: string, rubric_id: string }[]>([]);
@@ -119,6 +121,7 @@ export const TreasurerDashboard = () => {
       const validBalances = balancesList.filter((b): b is RubricBalance => b != null);
 
       setRubricData(validBalances.map(b => ({
+        id: b.rubric_id,
         name: b.rubric_name,
         value: b.current_balance,
         invested: b.total_invested,
@@ -212,6 +215,25 @@ export const TreasurerDashboard = () => {
       await fetchData();
     } catch (e) {
       showNotification('Erreur enregistrement dépense');
+    }
+  };
+
+  const handleUpdateRubric = async () => {
+    if (!editingRubricId || !editRubricName.trim()) return;
+    try {
+      setLoading(true);
+      await RubricsService.updateRubricRubricsRubricIdPatch(
+        editingRubricId,
+        { name: editRubricName }
+      );
+      showNotification('Rubrique renommée avec succès !');
+      setEditingRubricId(null);
+      setEditRubricName('');
+      await fetchData();
+    } catch (err) {
+      showNotification('Erreur lors de la mise à jour de la rubrique');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -432,6 +454,9 @@ export const TreasurerDashboard = () => {
         onClick={() => setActiveTab('deposits')}
       >
         Vérification Dépôts
+        {pendingDeposits.length > 0 && (
+          <span className="tab-badge">{pendingDeposits.length}</span>
+        )}
       </button>
       <button
         className={`tab-pill bg-transparent border-none cursor-pointer ${activeTab === 'expenses' ? 'active' : ''}`}
@@ -488,14 +513,14 @@ export const TreasurerDashboard = () => {
                 <ResponsiveContainer>
                   <BarChart data={rubricData} layout="vertical" margin={{ left: 20, right: 30, top: 10, bottom: 10 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#333" horizontal={false} />
-                    <XAxis 
-                      type="number" 
-                      stroke="#888" 
+                    <XAxis
+                      type="number"
+                      stroke="#888"
                       fontSize={11}
-                      tickFormatter={(val) => val >= 1000 ? `${(val/1000)}k` : val}
+                      tickFormatter={(val) => val >= 1000 ? `${(val / 1000)}k` : val}
                     />
                     <YAxis dataKey="name" type="category" stroke="#888" width={100} fontSize={11} />
-                    <Tooltip 
+                    <Tooltip
                       contentStyle={{ backgroundColor: '#111', border: '1px solid rgba(212, 175, 55, 0.5)', borderRadius: '8px' }}
                       formatter={(val: any) => [`${formatAmount(val)} FCFA`, '']}
                     />
@@ -513,14 +538,14 @@ export const TreasurerDashboard = () => {
                   <LineChart data={getMonthlyFlows()} margin={{ left: 40, right: 20, top: 10, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
                     <XAxis dataKey="name" stroke="#888" fontSize={11} tickLine={false} />
-                    <YAxis 
-                      stroke="#888" 
+                    <YAxis
+                      stroke="#888"
                       fontSize={11}
                       tickLine={false}
                       axisLine={false}
-                      tickFormatter={(val) => Math.abs(val) >= 1000 ? `${(val/1000)}k` : val}
+                      tickFormatter={(val) => Math.abs(val) >= 1000 ? `${(val / 1000)}k` : val}
                     />
-                    <Tooltip 
+                    <Tooltip
                       contentStyle={{ backgroundColor: '#111', border: '1px solid rgba(212, 175, 55, 0.5)', borderRadius: '8px' }}
                       formatter={(val: any) => [`${formatAmount(val)} FCFA`, '']}
                     />
@@ -546,12 +571,12 @@ export const TreasurerDashboard = () => {
                       }}
                     >
                       {act.type === 'Entrée' && (
-                        <svg className="w-6 h-6" style={{ color: act.color }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="w-6 h-6" style={{ color: act.color }} fill="none" viewBox="0 0 24 26" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                         </svg>
                       )}
                       {act.type === 'Sortie' && (
-                        <svg className="w-6 h-6" style={{ color: act.color }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="w-6 h-6" style={{ color: act.color }} fill="none" viewBox="0 0 24 26" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
                         </svg>
                       )}
@@ -888,29 +913,29 @@ export const TreasurerDashboard = () => {
                     <AreaChart data={getRunningBalance(selectedRubricForHistory)}>
                       <defs>
                         <linearGradient id="colorSolde" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#D4AF37" stopOpacity={0.3}/>
-                          <stop offset="95%" stopColor="#D4AF37" stopOpacity={0}/>
+                          <stop offset="5%" stopColor="#D4AF37" stopOpacity={0.3} />
+                          <stop offset="95%" stopColor="#D4AF37" stopOpacity={0} />
                         </linearGradient>
                       </defs>
                       <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                      <XAxis 
-                        dataKey="date" 
-                        stroke="#666" 
+                      <XAxis
+                        dataKey="date"
+                        stroke="#666"
                         fontSize={12}
                         tickLine={false}
                         axisLine={false}
                         dy={10}
                       />
-                      <YAxis 
-                        stroke="#666" 
+                      <YAxis
+                        stroke="#666"
                         fontSize={12}
                         tickLine={false}
                         axisLine={false}
-                        tickFormatter={(value) => `${(value/1000)}k`}
+                        tickFormatter={(value) => `${(value / 1000)}k`}
                       />
-                      <Tooltip 
-                        contentStyle={{ 
-                          backgroundColor: '#111', 
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: '#111',
                           border: '1px solid rgba(212, 175, 55, 0.5)',
                           borderRadius: '8px',
                           color: '#fff',
@@ -919,13 +944,13 @@ export const TreasurerDashboard = () => {
                         itemStyle={{ color: '#D4AF37', fontWeight: 'bold' }}
                         formatter={(value: any) => [`${Number(value).toLocaleString()} FCFA`, 'Solde Disponible']}
                       />
-                      <Area 
-                        type="stepAfter" 
-                        dataKey="Solde" 
-                        stroke="#D4AF37" 
+                      <Area
+                        type="stepAfter"
+                        dataKey="Solde"
+                        stroke="#D4AF37"
                         strokeWidth={3}
-                        fillOpacity={1} 
-                        fill="url(#colorSolde)" 
+                        fillOpacity={1}
+                        fill="url(#colorSolde)"
                         activeDot={{ r: 6, stroke: '#000', strokeWidth: 2 }}
                         dot={{ r: 4, fill: '#D4AF37', strokeWidth: 0 }}
                       />
@@ -1002,7 +1027,43 @@ export const TreasurerDashboard = () => {
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                   {rubricData.map((r, i) => (
-                    <Card key={i} title={r.name} className="hover:border-gold/50 transition-all duration-300 group">
+                    <Card
+                      key={i}
+                      className="hover:border-gold/50 transition-all duration-300 group"
+                      title={
+                        editingRubricId === r.id ? (
+                          <div className="flex flex-col gap-2">
+                            <Input
+                              value={editRubricName}
+                              onChange={e => setEditRubricName(e.target.value)}
+                              placeholder="Nouveau nom"
+                            />
+                            <div className="flex gap-2">
+                              <Button size="sm" onClick={handleUpdateRubric}>Valider</Button>
+                              <Button size="sm" variant="secondary" onClick={() => setEditingRubricId(null)}>Annuler</Button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="flex justify-between items-center w-full">
+                            <h3 className="card-title text-gold m-0">{r.name}</h3>
+                            <button
+                              className="w-10 h-10 rounded-full flex items-center justify-center text-gold bg-gold-light border border-gold-light transition-all shadow-gold-glow cursor-pointer"
+                              style={{ flexShrink: 0 }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setEditingRubricId(r.id);
+                                setEditRubricName(r.name);
+                              }}
+                              title="Modifier le nom"
+                            >
+                              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                              </svg>
+                            </button>
+                          </div>
+                        )
+                      }
+                    >
                       <div className="mb-6">
                         <p className="text-xs text-muted tracking-widest uppercase mb-1">Solde disponible</p>
                         <h2 className="text-gold group-hover:text-gold-light transition-colors tabular-nums">{formatAmount(r.value)} <small className="text-xs opacity-60">FCFA</small></h2>

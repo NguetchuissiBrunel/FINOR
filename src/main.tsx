@@ -6,10 +6,8 @@ import App from './App.tsx'
 import { OpenAPI } from './lib'
 
 // Configure the generated API client
-// In development, use '/api' for Vite's local proxy. In production, use the absolute Backend URL.
-OpenAPI.BASE = import.meta.env.DEV 
-  ? '/api' 
-  : 'https://finor-backend.onrender.com';
+// Always use the absolute backend URL — no proxy needed.
+OpenAPI.BASE = 'https://finor-backend.onrender.com';
 OpenAPI.TOKEN = async () => {
   return sessionStorage.getItem('treasurerToken') || ''
 }
