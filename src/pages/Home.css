@@ -159,8 +159,9 @@
 
 .pwa-hint-card {
   position: absolute;
-  top: 48%; /* Slightly higher for better visual balance */
+  top: 50%;
   left: 50%;
+  transform: translate(-50%, -50%);
   background-color: var(--color-surface);
   border: 1px solid var(--color-gold-glow);
   border-radius: var(--radius-lg);
