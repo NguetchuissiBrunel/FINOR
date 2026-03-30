@@ -19,6 +19,14 @@ import {
   type RubricBalance
 } from '../lib';
 import { LoadingOverlay } from '../components/UI/LoadingOverlay';
+import {
+  exportMasterReport,
+  exportInvestorsList,
+  exportValidatedDeposits,
+  exportExpenses,
+  exportTransfers,
+  exportRubricAudit,
+} from '../services/exportService';
 
 export const TreasurerDashboard = () => {
   const { showNotification } = useNotification();
@@ -487,7 +495,48 @@ export const TreasurerDashboard = () => {
 
       {activeTab === 'overview' && (
         <div className="animation-fade-in">
-          <h2 className="mb-10 text-gold-glow">Analyse Financière Globale</h2>
+          <div className="flex justify-between items-center mb-10">
+            <h2 className="m-0 text-gold-glow">Analyse Financière Globale</h2>
+            <div className="flex gap-3">
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => exportMasterReport({
+                  globalStats,
+                  investors: investorsList,
+                  deposits: validatedDeposits.map(d => ({
+                    date: new Date(d.created_at).toLocaleDateString('fr-FR'),
+                    investor: investorsList.find(i => i.id === d.investor_id)?.name || 'Inconnu',
+                    rubric: rubricsList.find(r => r.id === d.rubric_id)?.name || 'Inconnue',
+                    amount: d.amount,
+                    code: d.bank_receipt_code,
+                  })),
+                  expenses: expenses.map(e => ({
+                    date: new Date(e.date || e.created_at).toLocaleDateString('fr-FR'),
+                    description: e.description,
+                    rubric: rubricsList.find(r => r.id === e.rubric_id)?.name || 'Inconnue',
+                    amount: e.amount,
+                    receipt: e.receipt_number,
+                  })),
+                  transfers: transfers.map(t => ({
+                    date: new Date(t.date || t.created_at).toLocaleDateString('fr-FR'),
+                    source: rubricsList.find(r => r.id === t.source_rubric_id)?.name || 'Inconnue',
+                    destination: rubricsList.find(r => r.id === t.destination_rubric_id)?.name || 'Inconnue',
+                    amount: t.amount,
+                    reason: t.reason,
+                  })),
+                  rubricBalances: rubricData.map(r => ({
+                    name: r.name,
+                    invested: r.invested,
+                    spent: r.spent,
+                    balance: r.value,
+                  })),
+                })}
+              >
+                Exporter le Bilan
+              </Button>
+            </div>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-30">
             <Card className="border-gold">
               <p className="text-muted text-sm mb-3">Solde Total</p>
@@ -620,6 +669,23 @@ export const TreasurerDashboard = () => {
         <div className="animation-fade-in">
           <div className="flex justify-between items-center mb-6">
             <h2 className="m-0">Validations Dépôts Bancaires</h2>
+            {validatedDeposits.length > 0 && (
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => exportValidatedDeposits(
+                  validatedDeposits.map(d => ({
+                    date: new Date(d.created_at).toLocaleDateString('fr-FR'),
+                    investor: investorsList.find(i => i.id === d.investor_id)?.name || 'Inconnu',
+                    rubric: rubricsList.find(r => r.id === d.rubric_id)?.name || 'Inconnue',
+                    amount: d.amount,
+                    code: d.bank_receipt_code,
+                  }))
+                )}
+              >
+                Exporter Excel
+              </Button>
+            )}
           </div>
           <Card className="p-0 overflow-hidden">
             {pendingDeposits.length === 0 ? (
@@ -669,9 +735,28 @@ export const TreasurerDashboard = () => {
         <div className="animation-fade-in">
           <div className="flex justify-between items-center mb-6">
             <h2 className="m-0">Gestion des Dépenses</h2>
-            {!showNewExpenseForm && (
-              <Button onClick={() => setShowNewExpenseForm(true)}>+ Nouvelle Dépense</Button>
-            )}
+            <div className="flex gap-3">
+              {expenses.length > 0 && (
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => exportExpenses(
+                    expenses.map(e => ({
+                      date: new Date(e.date || e.created_at).toLocaleDateString('fr-FR'),
+                      description: e.description,
+                      rubric: rubricsList.find(r => r.id === e.rubric_id)?.name || 'Inconnue',
+                      amount: e.amount,
+                      receipt: e.receipt_number,
+                    }))
+                  )}
+                >
+                  Exporter Excel
+                </Button>
+              )}
+              {!showNewExpenseForm && (
+                <Button onClick={() => setShowNewExpenseForm(true)}>+ Nouvelle Dépense</Button>
+              )}
+            </div>
           </div>
 
           {showNewExpenseForm ? (
@@ -733,9 +818,28 @@ export const TreasurerDashboard = () => {
         <div className="animation-fade-in">
           <div className="flex justify-between items-center mb-6">
             <h2 className="m-0">Transferts Entre Rubriques (Prêts)</h2>
-            {!showNewTransferForm && (
-              <Button onClick={() => setShowNewTransferForm(true)}>+ Nouveau Transfert</Button>
-            )}
+            <div className="flex gap-3">
+              {transfers.length > 0 && (
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => exportTransfers(
+                    transfers.map((t: any) => ({
+                      date: new Date(t.date || t.created_at).toLocaleDateString('fr-FR'),
+                      source: rubricsList.find(r => r.id === t.source_rubric_id)?.name || 'Inconnue',
+                      destination: rubricsList.find(r => r.id === t.destination_rubric_id)?.name || 'Inconnue',
+                      amount: t.amount,
+                      reason: t.reason,
+                    }))
+                  )}
+                >
+                  Exporter Excel
+                </Button>
+              )}
+              {!showNewTransferForm && (
+                <Button onClick={() => setShowNewTransferForm(true)}>+ Nouveau Transfert</Button>
+              )}
+            </div>
           </div>
 
           {showNewTransferForm ? (
@@ -817,8 +921,19 @@ export const TreasurerDashboard = () => {
       {activeTab === 'investors' && (
         <div className="animation-fade-in">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="m-0">Récupération des Codes Investisseurs</h2>
-            <p className="text-sm text-muted">Aider un membre qui a égaré son code d'accès personnel.</p>
+            <div>
+              <h2 className="m-0">Récupération des Codes Investisseurs</h2>
+              <p className="text-sm text-muted mt-1">Aider un membre qui a égaré son code d'accès personnel.</p>
+            </div>
+            {investorsList.length > 0 && (
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => exportInvestorsList(investorsList)}
+              >
+                Exporter Excel
+              </Button>
+            )}
           </div>
 
           {investorsList.length === 0 ? (
@@ -891,12 +1006,30 @@ export const TreasurerDashboard = () => {
             <h2 className="m-0">
               {selectedRubricForHistory ? `Audit : ${selectedRubricForHistory}` : 'Gestion des Rubriques'}
             </h2>
-            {!showNewRubricForm && !selectedRubricForHistory && (
-              <Button onClick={() => setShowNewRubricForm(true)}>+ Nouvelle Rubrique</Button>
-            )}
-            {selectedRubricForHistory && (
-              <Button variant="secondary" onClick={() => setSelectedRubricForHistory(null)}>← Retour</Button>
-            )}
+            <div className="flex gap-3">
+              {selectedRubricForHistory && (() => {
+                const history = getRubricHistory(selectedRubricForHistory);
+                const rubricBal = rubricData.find(r => r.name === selectedRubricForHistory);
+                return (
+                  <Button
+                    size="sm"
+                    onClick={() => exportRubricAudit(
+                      selectedRubricForHistory,
+                      history,
+                      rubricBal?.value ?? 0
+                    )}
+                  >
+                    Exporter Audit Excel
+                  </Button>
+                );
+              })()}
+              {!showNewRubricForm && !selectedRubricForHistory && (
+                <Button onClick={() => setShowNewRubricForm(true)}>+ Nouvelle Rubrique</Button>
+              )}
+              {selectedRubricForHistory && (
+                <Button variant="secondary" onClick={() => setSelectedRubricForHistory(null)}>← Retour</Button>
+              )}
+            </div>
           </div>
 
           {selectedRubricForHistory ? (

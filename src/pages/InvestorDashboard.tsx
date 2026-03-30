@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Card } from '../components/UI/Card';
+import { Button } from '../components/UI/Button';
 import { useNotification } from '../context/NotificationContext';
-import { 
+import {
   PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend,
-  BarChart, Bar, XAxis, YAxis, CartesianGrid 
+  BarChart, Bar, XAxis, YAxis, CartesianGrid
 } from 'recharts';
 import { InvestorsService, RubricsService, type RubricBalance } from '../lib';
 import { LoadingOverlay } from '../components/UI/LoadingOverlay';
+import { exportPersonalStatement } from '../services/exportService';
 
 interface FormattedInvestment {
   id: string;
@@ -20,13 +22,13 @@ interface FormattedInvestment {
 export const InvestorDashboard = () => {
   const { showNotification } = useNotification();
   const [activeTab, setActiveTab] = useState<'history' | 'impact' | 'trends'>('history');
-  
+
   const investorCode = sessionStorage.getItem('investorCode') || 'INV-INVITÉ';
   const investorName = sessionStorage.getItem('investorName') || 'Investisseur';
 
   const [investments, setInvestments] = useState<FormattedInvestment[]>([]);
-  const [impactData, setImpactData] = useState<{name: string, value: number}[]>([]);
-  const [globalRubricData, setGlobalRubricData] = useState<{name: string, value: number, spent: number}[]>([]);
+  const [impactData, setImpactData] = useState<{ name: string, value: number }[]>([]);
+  const [globalRubricData, setGlobalRubricData] = useState<{ name: string, value: number, spent: number }[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Security Check & Data Fetch
@@ -46,7 +48,7 @@ export const InvestorDashboard = () => {
           InvestorsService.getMyHistoryInvestorsMeHistoryGet(code),
           InvestorsService.getMyImpactInvestorsMeImpactGet(code)
         ]);
-        
+
         const rubricsList = rubricsRes.data || [];
         const rubricsMap = rubricsList.reduce((acc, r) => {
           acc[r.id] = r.name;
@@ -120,19 +122,19 @@ export const InvestorDashboard = () => {
       </div>
 
       <div className="flex gap-4 mb-10 border-b border-gold-light pb-4 overflow-x-auto">
-        <button 
+        <button
           className={`tab-pill bg-transparent border-none cursor-pointer ${activeTab === 'history' ? 'active' : ''}`}
           onClick={() => setActiveTab('history')}
         >
           Récapitulatif
         </button>
-        <button 
+        <button
           className={`tab-pill bg-transparent border-none cursor-pointer ${activeTab === 'impact' ? 'active' : ''}`}
           onClick={() => setActiveTab('impact')}
         >
           Impact & Dépenses
         </button>
-        <button 
+        <button
           className={`tab-pill bg-transparent border-none cursor-pointer ${activeTab === 'trends' ? 'active' : ''}`}
           onClick={() => setActiveTab('trends')}
         >
@@ -142,6 +144,27 @@ export const InvestorDashboard = () => {
 
       {activeTab === 'history' && (
         <Card title="Mes Contributions" className="animation-fade-in shadow-lg">
+          <div className="flex justify-end mb-4">
+            {investments.length > 0 && (
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => exportPersonalStatement(
+                  investorName,
+                  investorCode,
+                  investments.map(inv => ({
+                    date: inv.date,
+                    rubric: inv.rubric,
+                    amount: inv.rawAmount,
+                    status: inv.status,
+                  })),
+                  totalInvested
+                )}
+              >
+                Télécharger mon relevé Excel
+              </Button>
+            )}
+          </div>
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
               <thead>
@@ -159,9 +182,9 @@ export const InvestorDashboard = () => {
                     <td style={{ padding: '1rem' }}>{inv.rubric}</td>
                     <td style={{ padding: '1rem', fontWeight: 'bold' }}>{inv.amount}</td>
                     <td style={{ padding: '1rem' }}>
-                      <span 
-                        style={{ 
-                          padding: '0.25rem 0.75rem', 
+                      <span
+                        style={{
+                          padding: '0.25rem 0.75rem',
                           borderRadius: '9999px',
                           fontSize: '0.875rem',
                           backgroundColor: inv.status === 'Validé' ? 'rgba(46, 204, 113, 0.2)' : 'rgba(212, 175, 55, 0.2)',
@@ -200,11 +223,11 @@ export const InvestorDashboard = () => {
                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                       ))}
                     </Pie>
-                    <Tooltip 
+                    <Tooltip
                       contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #D4AF37', borderRadius: '8px' }}
                       itemStyle={{ color: '#fff' }}
                     />
-                    <Legend verticalAlign="bottom" height={36}/>
+                    <Legend verticalAlign="bottom" height={36} />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
@@ -240,14 +263,14 @@ export const InvestorDashboard = () => {
                   <BarChart data={globalRubricData} margin={{ left: 40, right: 20, top: 10, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
                     <XAxis dataKey="name" stroke="#888" fontSize={11} tickLine={false} axisLine={false} />
-                    <YAxis 
-                      stroke="#888" 
-                      fontSize={11} 
-                      tickLine={false} 
+                    <YAxis
+                      stroke="#888"
+                      fontSize={11}
+                      tickLine={false}
                       axisLine={false}
-                      tickFormatter={(val) => Math.abs(val) > 1000 ? `${(val/1000)}k` : val}
+                      tickFormatter={(val) => Math.abs(val) > 1000 ? `${(val / 1000)}k` : val}
                     />
-                    <Tooltip 
+                    <Tooltip
                       contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #D4AF37', borderRadius: '8px' }}
                       formatter={(val: any) => [`${Number(val).toLocaleString('fr-FR')} FCFA`, '']}
                     />
@@ -275,7 +298,7 @@ export const InvestorDashboard = () => {
                       ))}
                     </Pie>
                     <Tooltip contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #D4AF37' }} />
-                    <Legend verticalAlign="bottom" height={36}/>
+                    <Legend verticalAlign="bottom" height={36} />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
