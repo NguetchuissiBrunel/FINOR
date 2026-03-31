@@ -4,8 +4,10 @@ import { Button } from '../components/UI/Button';
 import { Input } from '../components/UI/Input';
 import { useNotification } from '../context/NotificationContext';
 import { AuthenticationService, ApiError } from '../lib';
+import { useTranslation } from 'react-i18next';
 
 export const TreasurerLogin = () => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -24,18 +26,18 @@ export const TreasurerLogin = () => {
         sessionStorage.setItem('treasurerToken', token);
         sessionStorage.setItem('treasurerEmail', email);
         sessionStorage.setItem('isTreasurerAuthenticated', 'true');
-        showNotification('Accès Trésorier Validé ✓');
+        showNotification(t('treasurerLogin.success'));
         window.location.href = '/tresorier';
       } else {
-        showNotification('Réponse inattendue du serveur');
+        showNotification(t('treasurerLogin.unexpectedResponse'));
       }
     } catch (err) {
       if (err instanceof ApiError) {
         const body = err.body;
-        const msg = body?.detail || body?.message || 'Identifiants incorrects';
-        showNotification(typeof msg === 'string' ? msg : 'Identifiants incorrects');
+        const msg = body?.detail || body?.message || t('treasurerLogin.invalidCreds');
+        showNotification(typeof msg === 'string' ? msg : t('treasurerLogin.invalidCreds'));
       } else {
-        showNotification('Erreur de connexion au serveur');
+        showNotification(t('treasurerLogin.connError'));
       }
     } finally {
       setLoading(false);
@@ -45,17 +47,17 @@ export const TreasurerLogin = () => {
   return (
     <div className="login-page pt-40 pb-20">
       <div className="max-w-md mx-auto">
-        <h1 className="text-center mb-10">Accès <span className="text-gold">Trésorier</span></h1>
+        <h1 className="text-center mb-10">{t('treasurerLogin.titlePart1')}<span className="text-gold">{t('treasurerLogin.titleGold')}</span></h1>
 
         <Card className="border-gold">
           <form onSubmit={handleLogin}>
             <p className="text-muted text-sm mb-8 text-center">
-              Veuillez saisir vos identifiants pour accéder à la gestion de la trésorerie.
+              {t('treasurerLogin.desc')}
             </p>
 
             <Input
-              label="Adresse Email"
-              placeholder="tresorier@finor.com"
+              label={t('treasurerLogin.emailLabel')}
+              placeholder={t('treasurerLogin.emailPlaceholder')}
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -64,8 +66,8 @@ export const TreasurerLogin = () => {
 
             <div style={{ marginTop: '1rem' }}>
               <Input
-                label="Mot de passe"
-                placeholder="••••••••••••"
+                label={t('treasurerLogin.pwdLabel')}
+                placeholder={t('treasurerLogin.pwdPlaceholder')}
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -75,12 +77,12 @@ export const TreasurerLogin = () => {
 
             <div className="mt-10">
               <Button type="submit" fullWidth disabled={loading}>
-                {loading ? 'Connexion...' : 'Déverrouiller l\'Espace'}
+                {loading ? t('treasurerLogin.connecting') : t('treasurerLogin.btnSubmit')}
               </Button>
             </div>
 
             <p className="mt-8 text-center text-xs text-muted italic">
-              Réservé au trésorier officiel de l'association.
+              {t('treasurerLogin.note')}
             </p>
           </form>
         </Card>

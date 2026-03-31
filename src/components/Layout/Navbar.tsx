@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { LanguageSwitcher } from '../UI/LanguageSwitcher';
 import './Navbar.css';
 
 export const Navbar = () => {
+  const { t } = useTranslation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
 
@@ -23,10 +26,11 @@ export const Navbar = () => {
         
         {/* Desktop Links */}
         <div className="navbar-links">
-          <Link to="/" className={`nav-link ${isActive('/')}`}>Accueil</Link>
-          <Link to="/investir" className={`nav-link ${isActive('/investir')}`}>Investir</Link>
-          <Link to="/investisseur/login" className={`nav-link ${isActive('/investisseur/login')}`}>Mon Espace</Link>
-          <Link to="/tresorier/login" className={`btn btn-secondary nav-btn ${isActive('/tresorier/login')}`}>Espace Trésorier</Link>
+          <Link to="/" className={`nav-link ${isActive('/')}`}>{t('navbar.home')}</Link>
+          <Link to="/investir" className={`nav-link ${isActive('/investir')}`}>{t('navbar.invest')}</Link>
+          <Link to="/investisseur/login" className={`nav-link ${isActive('/investisseur/login')}`}>{t('navbar.mySpace')}</Link>
+          <Link to="/tresorier/login" className={`btn btn-secondary nav-btn ${isActive('/tresorier/login')}`}>{t('navbar.treasurerSpace')}</Link>
+          <LanguageSwitcher />
         </div>
 
         {/* Mobile Menu Toggle */}
@@ -39,10 +43,13 @@ export const Navbar = () => {
 
       {/* Mobile Dropdown */}
       <div className={`mobile-dropdown ${isMobileMenuOpen ? 'open' : ''}`}>
-        <Link to="/" className={`mobile-nav-link ${isActive('/')}`} onClick={closeMenu}>Accueil</Link>
-        <Link to="/investir" className={`mobile-nav-link ${isActive('/investir')}`} onClick={closeMenu}>Investir</Link>
-        <Link to="/investisseur/login" className={`mobile-nav-link ${isActive('/investisseur/login')}`} onClick={closeMenu}>Mon Espace</Link>
-        <Link to="/tresorier/login" className={`mobile-nav-btn btn btn-secondary ${isActive('/tresorier/login')}`} onClick={closeMenu}>Espace Trésorier</Link>
+        <Link to="/" className={`mobile-nav-link ${isActive('/')}`} onClick={closeMenu}>{t('navbar.home')}</Link>
+        <Link to="/investir" className={`mobile-nav-link ${isActive('/investir')}`} onClick={closeMenu}>{t('navbar.invest')}</Link>
+        <Link to="/investisseur/login" className={`mobile-nav-link ${isActive('/investisseur/login')}`} onClick={closeMenu}>{t('navbar.mySpace')}</Link>
+        <Link to="/tresorier/login" className={`mobile-nav-btn btn btn-secondary ${isActive('/tresorier/login')}`} onClick={closeMenu}>{t('navbar.treasurerSpace')}</Link>
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+          <LanguageSwitcher />
+        </div>
       </div>
     </nav>
   );

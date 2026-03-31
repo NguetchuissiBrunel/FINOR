@@ -4,8 +4,10 @@ import { Button } from '../components/UI/Button';
 import { Input } from '../components/UI/Input';
 import { useNotification } from '../context/NotificationContext';
 import { AuthenticationService, ApiError } from '../lib';
+import { useTranslation } from 'react-i18next';
 
 export const InvestorLogin = () => {
+  const { t } = useTranslation();
   const [personalCode, setPersonalCode] = useState('');
   const [loading, setLoading] = useState(false);
   const { showNotification } = useNotification();
@@ -22,18 +24,18 @@ export const InvestorLogin = () => {
         sessionStorage.setItem('investorCode', investor.access_code);
         sessionStorage.setItem('investorName', investor.name);
         sessionStorage.setItem('investorId', investor.id);
-        showNotification(`Bienvenue, ${investor.name} !`);
+        showNotification(t('investorLogin.welcome', { name: investor.name }));
         window.location.href = '/investisseur/dashboard';
       } else {
-        showNotification('Réponse inattendue du serveur');
+        showNotification(t('investorLogin.unexpectedResponse'));
       }
     } catch (err) {
       if (err instanceof ApiError) {
         const body = err.body;
-        const msg = body?.detail || body?.message || 'Code personnel invalide';
-        showNotification(typeof msg === 'string' ? msg : 'Code personnel invalide');
+        const msg = body?.detail || body?.message || t('investorLogin.invalidCode');
+        showNotification(typeof msg === 'string' ? msg : t('investorLogin.invalidCode'));
       } else {
-        showNotification('Erreur de connexion au serveur');
+        showNotification(t('investorLogin.connError'));
       }
     } finally {
       setLoading(false);
@@ -43,17 +45,17 @@ export const InvestorLogin = () => {
   return (
     <div className="login-page pt-40 pb-20">
       <div className="max-w-md mx-auto">
-        <h1 className="text-center mb-10">Mon Espace <span className="text-gold">Investisseur</span></h1>
+        <h1 className="text-center mb-10">{t('investorLogin.titlePart1')}<span className="text-gold">{t('investorLogin.titleGold')}</span></h1>
 
         <Card>
           <form onSubmit={handleLogin}>
             <p className="text-muted text-sm mb-8 text-center">
-              Saisissez votre code personnel pour accéder à votre suivi d'investissement.
+              {t('investorLogin.desc')}
             </p>
 
             <Input
-              label="Votre Code Personnel"
-              placeholder="Ex: INV-8854"
+              label={t('investorLogin.codeLabel')}
+              placeholder={t('investorLogin.codePlaceholder')}
               value={personalCode}
               onChange={(e) => setPersonalCode(e.target.value)}
               required
@@ -61,12 +63,12 @@ export const InvestorLogin = () => {
 
             <div className="mt-10">
               <Button type="submit" fullWidth disabled={loading}>
-                {loading ? 'Vérification...' : 'Consulter mon Impact'}
+                {loading ? t('investorLogin.verifying') : t('investorLogin.btnSubmit')}
               </Button>
             </div>
 
             <p className="mt-8 text-center text-xs text-muted">
-              Le code **INV-XXXX** est celui qui vous a été remis lors de votre premier versement.
+              {t('investorLogin.note')}
             </p>
           </form>
         </Card>

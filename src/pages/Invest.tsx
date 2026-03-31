@@ -10,8 +10,10 @@ import {
   type RubricRead,
 } from '../lib';
 import { LoadingOverlay } from '../components/UI/LoadingOverlay';
+import { useTranslation } from 'react-i18next';
 
 export const Invest = () => {
+  const { t } = useTranslation();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     name: '',
@@ -33,7 +35,7 @@ export const Invest = () => {
         const res = await RubricsService.listRubricsRubricsGet();
         setRubrics(res.data || []);
       } catch {
-        showNotification('Impossible de charger les rubriques');
+        showNotification(t('invest.errLoadRubrics'));
       } finally {
         setLoadingRubrics(false);
       }
@@ -66,14 +68,14 @@ export const Invest = () => {
       setPersonalCode(data?.access_code || '');
       setIsNewInvestor(!!data?.is_new_investor);
       setStep(4);
-      showNotification('Déclaration transmise avec succès !');
+      showNotification(t('invest.successDeclare'));
     } catch (err) {
       if (err instanceof ApiError) {
         const body = err.body;
-        const msg = body?.detail || body?.message || 'Erreur lors de la soumission';
-        showNotification(typeof msg === 'string' ? msg : 'Erreur lors de la soumission');
+        const msg = body?.detail || body?.message || t('invest.errSubmit');
+        showNotification(typeof msg === 'string' ? msg : t('invest.errSubmit'));
       } else {
-        showNotification('Erreur de connexion au serveur');
+        showNotification(t('invest.errConn'));
       }
     } finally {
       setSubmitting(false);
@@ -85,54 +87,54 @@ export const Invest = () => {
   return (
     <div className="invest-page">
       {(submitting || loadingRubrics) && (
-        <LoadingOverlay message={"Synchronisation"} />
+        <LoadingOverlay message={t('invest.sync')} />
       )}
       <div className="max-w-2xl mx-auto py-12">
-        <h1 className="text-center mb-10">Déclarer un <span className="text-gold">Investissement</span></h1>
+        <h1 className="text-center mb-10">{t('invest.titlePart1')}<span className="text-gold">{t('invest.titleGold')}</span></h1>
 
         <Card>
           {step === 1 && (
             <div className="step-content animation-fade-in">
-              <h3 className="mb-6">Étape 1 : Informations de base</h3>
+              <h3 className="mb-6">{t('invest.step1')}</h3>
               <Input
-                label="Votre Nom complet"
-                placeholder="Ex: Jean Kamga"
+                label={t('invest.nameLabel')}
+                placeholder={t('invest.namePlaceholder')}
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               />
               <Input
-                label="Code du reçu bancaire"
-                placeholder="Ex: REC-987654"
+                label={t('invest.receiptLabel')}
+                placeholder={t('invest.receiptPlaceholder')}
                 value={formData.receiptCode}
                 onChange={(e) => setFormData({ ...formData, receiptCode: e.target.value })}
               />
               <div className="mt-8 flex justify-end">
-                <Button onClick={handleNext} disabled={!formData.name || !formData.receiptCode}>Suivant</Button>
+                <Button onClick={handleNext} disabled={!formData.name || !formData.receiptCode}>{t('invest.nextBtn')}</Button>
               </div>
             </div>
           )}
 
           {step === 2 && (
             <div className="step-content animation-fade-in">
-              <h3 className="mb-6">Étape 2 : Montant et Rubrique</h3>
+              <h3 className="mb-6">{t('invest.step2')}</h3>
               <Input
-                label="Montant du dépôt (FCFA)"
+                label={t('invest.amountLabel')}
                 type="number"
-                placeholder="Ex: 100000"
+                placeholder={t('invest.amountPlaceholder')}
                 value={formData.amount}
                 onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
               />
               <div className="form-group mb-6">
-                <label className="form-label">Rubrique de destination</label>
+                <label className="form-label">{t('invest.rubricLabel')}</label>
                 {loadingRubrics ? (
-                  <p className="text-muted text-sm">Chargement des rubriques...</p>
+                  <p className="text-muted text-sm">{t('invest.rubricLoading')}</p>
                 ) : (
                   <select
                     className="form-input"
                     value={formData.rubricId}
                     onChange={(e) => setFormData({ ...formData, rubricId: e.target.value })}
                   >
-                    <option value="">Sélectionnez une rubrique...</option>
+                    <option value="">{t('invest.rubricSelect')}</option>
                     {rubrics.map(r => (
                       <option key={r.id} value={r.id}>{r.name}</option>
                     ))}
@@ -140,41 +142,40 @@ export const Invest = () => {
                 )}
               </div>
               <div className="mt-8 flex justify-between">
-                <Button variant="secondary" onClick={handlePrev}>Retour</Button>
-                <Button onClick={handleNext} disabled={!formData.amount || !formData.rubricId}>Suivant</Button>
+                <Button variant="secondary" onClick={handlePrev}>{t('invest.prevBtn')}</Button>
+                <Button onClick={handleNext} disabled={!formData.amount || !formData.rubricId}>{t('invest.nextBtn')}</Button>
               </div>
             </div>
           )}
 
           {step === 3 && (
             <form onSubmit={handleSubmit} className="step-content animation-fade-in">
-              <h3 className="mb-6">Étape 3 : Confirmation des données</h3>
+              <h3 className="mb-6">{t('invest.step3')}</h3>
               <div className="bg-surface-hover p-6 rounded-md border border-gold-light mb-8">
                 <div className="flex justify-between mb-2">
-                  <span className="text-muted">Investisseur :</span>
+                  <span className="text-muted">{t('invest.investorLabel')}</span>
                   <span className="font-bold">{formData.name}</span>
                 </div>
                 <div className="flex justify-between mb-2">
-                  <span className="text-muted">Code Reçu :</span>
+                  <span className="text-muted">{t('invest.receiptKey')}</span>
                   <span className="text-gold">{formData.receiptCode}</span>
                 </div>
                 <div className="flex justify-between mb-2">
-                  <span className="text-muted">Montant :</span>
+                  <span className="text-muted">{t('invest.amountKey')}</span>
                   <span className="font-bold">{Number(formData.amount).toLocaleString()} FCFA</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted">Rubrique :</span>
+                  <span className="text-muted">{t('invest.rubricKey')}</span>
                   <span>{selectedRubricName}</span>
                 </div>
               </div>
               <p className="text-sm text-muted mb-8 italic">
-                En cliquant sur confirmer, vous déclarez avoir effectué ce dépôt à la banque.
-                Le trésorier validera l'opération après vérification.
+                {t('invest.confirmWarning')}
               </p>
               <div className="mt-8 flex justify-between">
-                <Button type="button" variant="secondary" onClick={handlePrev}>Retour</Button>
+                <Button type="button" variant="secondary" onClick={handlePrev}>{t('invest.prevBtn')}</Button>
                 <Button type="submit" disabled={submitting}>
-                  {submitting ? 'Envoi en cours...' : 'Confirmer ma déclaration'}
+                  {submitting ? t('invest.confirming') : t('invest.confirmBtn')}
                 </Button>
               </div>
             </form>
@@ -189,13 +190,13 @@ export const Invest = () => {
                   </svg>
                 </div>
               </div>
-              <h3 className="text-gold mb-2">Déclaration Transmise !</h3>
+              <h3 className="text-gold mb-2">{t('invest.successTitle')}</h3>
               <p className="text-muted mb-8">
-                Votre investissement est en cours de validation.
+                {t('invest.successSub')}
                 {isNewInvestor ? (
-                  <>Voici votre <strong>Code Personnel</strong> secret pour consulter vos futurs relevés :</>
+                  <> {t('invest.newInvestorCode')}</>
                 ) : (
-                  <>Bon retour ! Votre investissement a été associé à votre compte existant.</>
+                  <> {t('invest.returningInvestor')}</>
                 )}
               </p>
               {isNewInvestor && personalCode && (
@@ -204,12 +205,12 @@ export const Invest = () => {
                     {personalCode}
                   </div>
                   <p className="text-xs text-muted mb-10">
-                    Notez précieusement ce code. Il ne vous sera communiqué qu'une seule fois.
+                    {t('invest.saveCodeWarn')}
                   </p>
                 </>
               )}
               <Button onClick={() => window.location.href = '/investisseur/login'}>
-                Accéder à mon espace
+                {t('invest.accessSpace')}
               </Button>
             </div>
           )}
